@@ -1,0 +1,36 @@
+Title: CANONICAL-01 — Canonical repo intake and mobile foundation reconciliation plan
+Coder: 3
+Module: App.Mobile.Android planning/integration
+Task type: documentation / integration planning / repository reconciliation
+
+Goal
+- Inspect the canonical repository, read the real Sprint 1 handoff documents, compare the canonical mobile baseline against the previously built mobile foundation, and identify the first safe next step without importing code in this task.
+
+What changes
+- docs only
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- planning only
+
+Security
+- no auth/authz code changes
+
+Observability
+- intake/reconciliation report only
+
+Rollback
+- remove docs created by this step
+
+Definition of done
+- canonical repo state documented
+- handoff docs inspected
+- existing canonical mobile projects inspected
+- previous mobile foundation compared if available
+- first safe next code/import step identified
+- no production code changes
