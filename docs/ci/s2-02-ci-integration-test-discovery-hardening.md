@@ -1,4 +1,4 @@
-﻿# S2-02 CI Integration Test Discovery Hardening
+# S2-02 CI Integration Test Discovery Hardening
 
 Status: Draft
 Owner: Coder 1 / Platform Owner
@@ -79,3 +79,16 @@ No production deploy included.
   - feature flag: none;
   - rollback: revert PR;
   - production deploy: not included.
+## Investigation update
+
+Manual main CI investigation showed that integration test discovery works.
+The real defect is false-green behavior: `dotnet test` can fail inside the PowerShell foreach loop while the GitHub Actions step still completes successfully.
+
+Observed case:
+- `tests/Integration/App.Api/App.Api.IntegrationTests.csproj` was discovered and executed.
+- Both App.Api host tests failed in CI with 500 responses.
+- The integration-tests job continued to the next projects and ended as success.
+
+S2-02 therefore hardens both:
+- test failure propagation in CI loops;
+- App.Api host test isolation from external database availability.
