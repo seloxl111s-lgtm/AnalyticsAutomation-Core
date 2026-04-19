@@ -87,6 +87,9 @@ var app = builder.Build();
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapGet(
     "/",
     () => Results.Ok(new
@@ -237,7 +240,8 @@ app.MapGet(
     {
         var result = await service.GetNodesAsync(cancellationToken);
         return Results.Ok(result);
-    });
+    })
+    .RequireAuthorization();
 
 app.MapGet(
     "/api/group-tree/routing-preview",
@@ -321,3 +325,5 @@ app.Logger.LogInformation(
     databaseOptions.Database);
 
 app.Run();
+
+public partial class Program { }
