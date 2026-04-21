@@ -5,8 +5,6 @@ Track the controlled mobile foundation replay into the canonical repository with
 
 ## Canonical App.Mobile.Android current state
 The canonical repository contains the complete IMPORT-01..07 Android media/outbox foundation chain in `main`:
-- `App.Mobile.Android.csproj` targets `net10.0-android`.
-- `App.Mobile.Android` references `App.UI.Shared` as already present in main.
 - Shell, navigation, Russian visible baseline, and local shell-state stubs are present from MOB-CANON-IMPORT-01 / PR #67.
 - Android native video picker and native camera capture baseline are present from MOB-CANON-IMPORT-02 / PR #95.
 - Local selected-media descriptor/cache and the selected local media card are present from MOB-CANON-IMPORT-02 / PR #95.
@@ -23,6 +21,7 @@ The canonical repository contains the complete IMPORT-01..07 Android media/outbo
 
 Report-first baseline means:
 - local FPV report draft shell
+- report route/list and create draft action
 - media selection/capture inside report draft
 - duplicate-safe attachment behavior inside draft
 - local report draft queue action

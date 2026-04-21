@@ -23,6 +23,7 @@
 ## Scope restored in this PR slice
 - Local report-first direction docs.
 - Local FPV report draft shell.
+- Report route/list and create draft action.
 - Media selection/capture inside report draft.
 - Duplicate-safe attachment behavior inside draft.
 - Local report draft queue action.

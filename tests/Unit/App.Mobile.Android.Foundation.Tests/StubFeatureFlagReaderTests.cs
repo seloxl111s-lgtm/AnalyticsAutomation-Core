@@ -17,6 +17,12 @@ public sealed class StubFeatureFlagReaderTests
     }
 
     [Fact]
+    public void ReportDraftShellFlagIsEnabled()
+    {
+        Assert.True(Reader.IsEnabled(global::App.Mobile.Android.Services.Stubs.StubFeatureFlagReader.ReportDraftShellFlag));
+    }
+
+    [Fact]
     public void UnknownFlagIsDisabled()
     {
         Assert.False(Reader.IsEnabled("mobile.unknown.flag"));

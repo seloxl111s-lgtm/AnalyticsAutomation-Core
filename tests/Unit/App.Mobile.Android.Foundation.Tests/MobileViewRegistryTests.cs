@@ -4,15 +4,16 @@ public sealed class MobileViewRegistryTests
 {
     private static readonly global::App.Mobile.Android.Navigation.MobileViewId[] ExpectedViewIds =
     [
+        global::App.Mobile.Android.Navigation.MobileViewId.Reports,
         global::App.Mobile.Android.Navigation.MobileViewId.Home,
         global::App.Mobile.Android.Navigation.MobileViewId.Upload,
         global::App.Mobile.Android.Navigation.MobileViewId.Queue
     ];
 
-    private static readonly string[] ExpectedRoutes = ["/", "/upload", "/queue"];
+    private static readonly string[] ExpectedRoutes = ["/reports", "/", "/upload", "/queue"];
 
     [Fact]
-    public void RegistryContainsExactlyHomeUploadAndQueue()
+    public void RegistryIncludesReportsHomeUploadAndQueue()
     {
         var registry = new global::App.Mobile.Android.Navigation.MobileViewRegistry();
 
@@ -22,7 +23,7 @@ public sealed class MobileViewRegistryTests
     }
 
     [Fact]
-    public void RegistryUsesExpectedRoutes()
+    public void RegistryIncludesReportsRouteAndKeepsExistingRoutes()
     {
         var registry = new global::App.Mobile.Android.Navigation.MobileViewRegistry();
 
@@ -32,14 +33,14 @@ public sealed class MobileViewRegistryTests
     }
 
     [Fact]
-    public void GetVisibleMenuEntriesReturnsAllThreeEntriesForDefaultStubAccessContext()
+    public void GetVisibleMenuEntriesReturnsAllFourEntriesForDefaultStubAccessContext()
     {
         var registry = new global::App.Mobile.Android.Navigation.MobileViewRegistry();
         var accessContext = CreateAccessContext();
 
         var visibleEntries = registry.GetVisibleMenuEntries(accessContext).ToArray();
 
-        Assert.Equal(3, visibleEntries.Length);
+        Assert.Equal(4, visibleEntries.Length);
         Assert.Equal(ExpectedRoutes, visibleEntries.Select(entry => entry.Route).ToArray());
     }
 

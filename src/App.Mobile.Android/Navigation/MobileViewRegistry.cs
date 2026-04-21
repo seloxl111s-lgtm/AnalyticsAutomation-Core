@@ -6,6 +6,11 @@ internal sealed class MobileViewRegistry
         new[]
         {
             new MobileMenuEntry(
+                MobileViewId.Reports,
+                global::App.Mobile.Android.Localization.MobileUiText.MenuReports,
+                "/reports",
+                "bi bi-journal-text-nav-menu"),
+            new MobileMenuEntry(
                 MobileViewId.Home,
                 global::App.Mobile.Android.Localization.MobileUiText.MenuHome,
                 "/",

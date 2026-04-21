@@ -116,3 +116,7 @@ Scope:
 - no `PreUploadCheck`
 - no `UploadReceipt`
 - no `App.UI.Shared` changes
+
+## Implementation note
+- `MOB-CANON-REPORT-01` starts the local report draft shell in `App.Mobile.Android` only
+- this step must not invent final backend report contracts or lookup catalogs
