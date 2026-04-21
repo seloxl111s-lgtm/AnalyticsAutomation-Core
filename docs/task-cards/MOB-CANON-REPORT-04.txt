@@ -1,0 +1,38 @@
+Title: MOB-CANON-REPORT-04 — Local report draft field editing and selector prototype
+Coder: 3
+Module: App.Mobile.Android
+Task type: mobile UI capability / local report draft editing / local lookup prototype
+
+Goal:
+Make the local FPV report draft fields editable and add mobile-local selector behavior without backend lookup catalogs.
+
+What changes:
+- mobile only
+
+New or changed contracts:
+- shared DTO/contracts unchanged
+
+Migration:
+- none
+
+Offline behavior:
+- local in-memory report draft field editing only, no backend save, no sync, no upload
+
+Security:
+- no auth/authz changes
+
+Observability:
+- local edit result text and local lookup stub note
+
+Rollback:
+- revert this local field editing slice
+
+Definition of done:
+- build succeeds
+- unit tests pass
+- report draft fields can be edited locally
+- selector fields open local stub selector
+- selected stub values update local draft fields
+- final lookup dictionaries are not hardcoded
+- no backend integration
+- no App.UI.Shared changes
