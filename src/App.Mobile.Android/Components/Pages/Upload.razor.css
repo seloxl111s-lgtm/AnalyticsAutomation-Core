@@ -119,6 +119,10 @@
     line-height: 1.45;
 }
 
+.selected-media-note-repair {
+    border-left: 4px solid #2563eb;
+}
+
 .precheck-card {
     margin-top: 1rem;
     padding: 1rem;

@@ -66,6 +66,7 @@
                                 @if (!item.LocalMediaDraft.HasLocalReadHandle)
                                 {
                                     <p class="queue-restored-note">@MobileUiText.QueueRestoredMetadataOnlyNoteText</p>
+                                    <p class="queue-repair-hint">@MobileUiText.QueueRepairHintText</p>
                                 }
                             </section>
                         }
@@ -89,6 +90,12 @@
                         </dl>
 
                         <div class="queue-item-actions">
+                            @if (item.LocalMediaDraft is not null && !item.LocalMediaDraft.HasLocalReadHandle)
+                            {
+                                <button type="button" class="btn btn-outline-primary" @onclick="() => RepairAsync(item.ItemId)">
+                                    @MobileUiText.QueueRepairButton
+                                </button>
+                            }
                             <button type="button" class="btn btn-outline-secondary" @onclick="() => RetryAsync(item.ItemId)">
                                 @MobileUiText.QueueRetryButton
                             </button>
@@ -136,6 +143,14 @@
     private async Task RetryAsync(string itemId)
     {
         var result = await MobileOutboxService.RetryAsync(itemId);
+        ResultText = result.Message;
+        ResultIsWarning = !result.Applied;
+        await LoadItemsAsync();
+    }
+
+    private async Task RepairAsync(string itemId)
+    {
+        var result = await MobileOutboxService.RepairLocalMediaDraftAsync(itemId);
         ResultText = result.Message;
         ResultIsWarning = !result.Applied;
         await LoadItemsAsync();

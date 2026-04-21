@@ -57,6 +57,12 @@
     line-height: 1.45;
 }
 
+.queue-repair-hint {
+    margin: 0.75rem 0 0;
+    color: #1d4f91;
+    line-height: 1.45;
+}
+
 .queue-item-card {
     padding: 1rem;
     border: 1px solid #d7e7db;

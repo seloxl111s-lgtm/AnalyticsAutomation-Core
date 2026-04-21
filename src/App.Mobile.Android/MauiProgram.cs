@@ -46,6 +46,9 @@ public static class MauiProgram
             global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService,
             global::App.Mobile.Android.Services.Local.LocalOutboxDuplicatePrecheckService>();
         builder.Services.AddSingleton<
+            global::App.Mobile.Android.Services.Abstractions.ILocalMediaDraftRepairService,
+            global::App.Mobile.Android.Services.Local.LocalCurrentSelectionDraftRepairService>();
+        builder.Services.AddSingleton<
             global::App.Mobile.Android.Services.Abstractions.IMobileOutboxSnapshotStore>(
             _ => new global::App.Mobile.Android.Services.Local.FileMobileOutboxSnapshotStore(
                 global::Microsoft.Maui.Storage.FileSystem.AppDataDirectory));
