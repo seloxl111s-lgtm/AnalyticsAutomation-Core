@@ -1,0 +1,38 @@
+Title: MOB-CANON-IMPORT-02 — Android media picker/camera + selected-media cache reconciliation
+Coder: 3
+Module: App.Mobile.Android
+Task type: repository reconciliation / Android adapter / UI capability / test coverage
+
+Goal
+- Restore only the Android native media picker/camera and local selected-media cache slice from the previous mobile foundation into the canonical App.Mobile.Android project without importing outbox, backend, or shared UI changes.
+
+What changes
+- mobile only
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- local selected-media cache only, no upload/sync/business actions
+
+Security
+- no auth/authz changes
+
+Observability
+- local picker/capture result text, selected-media card, build/test/handoff note
+
+Rollback
+- revert this import slice
+
+Definition of done
+- build succeeds
+- unit tests pass
+- Upload route opens native video picker
+- Upload route opens native camera capture when supported or shows safe Russian error
+- selected local media card renders after pick/capture
+- clear local selection works
+- no backend integration
+- no App.UI.Shared changes

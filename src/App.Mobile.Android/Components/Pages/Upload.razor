@@ -1,16 +1,140 @@
 @page "/upload"
 @using global::App.Mobile.Android.Localization
-@using global::App.UI.Shared.Pages
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileMediaService MobileMediaService
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore SelectedMediaStore
 
 <h1>@MobileUiText.UploadTitle</h1>
 <p>@MobileUiText.UploadIntro</p>
 
-<UploadPlaceholder />
+<section class="media-capability-card">
+    <div class="media-card-header">
+        <h2>@MobileUiText.UploadCapabilityCardTitle</h2>
+        <span class="media-local-badge">@MobileUiText.UploadLocalDeviceBadge</span>
+    </div>
+
+    <p class="media-summary">@CapabilitySummaryText</p>
+
+    <dl class="media-capability-list">
+        <div>
+            <dt>@MobileUiText.UploadFilePickerLabel</dt>
+            <dd>@GetCapabilityStateText(CapabilitySnapshot?.FilePickerSeamState)</dd>
+        </div>
+        <div>
+            <dt>@MobileUiText.UploadGalleryVideoLabel</dt>
+            <dd>@GetCapabilityStateText(CapabilitySnapshot?.GalleryVideoSeamState)</dd>
+        </div>
+        <div>
+            <dt>@MobileUiText.UploadCameraCaptureLabel</dt>
+            <dd>@GetCapabilityStateText(CapabilitySnapshot?.CameraCaptureSeamState)</dd>
+        </div>
+    </dl>
+
+    <div class="media-action-row">
+        <button type="button" class="btn btn-primary" @onclick="SelectVideoAsync">@MobileUiText.UploadSelectVideoButton</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="CaptureVideoAsync">@MobileUiText.UploadCaptureVideoButton</button>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(MediaResultText))
+    {
+        <p class="media-result">@MediaResultText</p>
+    }
+</section>
+
+@if (CurrentSelectedMedia is not null)
+{
+    <section class="selected-media-card">
+        <h3>@MobileUiText.UploadSelectedMediaCardTitle</h3>
+
+        <dl class="selected-media-grid">
+            <div>
+                <dt>@MobileUiText.UploadSelectedMediaSourceLabel</dt>
+                <dd>@MobileUiText.GetSelectedMediaSourceText(CurrentSelectedMedia.Source)</dd>
+            </div>
+            <div>
+                <dt>@MobileUiText.UploadSelectedMediaFileNameLabel</dt>
+                <dd>@CurrentSelectedMedia.FileName</dd>
+            </div>
+            <div>
+                <dt>@MobileUiText.UploadSelectedMediaContentTypeLabel</dt>
+                <dd>@GetSelectedMediaContentTypeText(CurrentSelectedMedia.ContentType)</dd>
+            </div>
+            <div>
+                <dt>@MobileUiText.UploadSelectedMediaSelectedAtLabel</dt>
+                <dd>@FormatSelectedAt(CurrentSelectedMedia.SelectedAtUtc)</dd>
+            </div>
+            <div>
+                <dt>@MobileUiText.UploadSelectedMediaStateLabel</dt>
+                <dd>@MobileUiText.UploadSelectedMediaStateText</dd>
+            </div>
+        </dl>
+
+        <div class="selected-media-actions">
+            <button type="button" class="btn btn-outline-danger" @onclick="ClearSelectedMediaAsync">@MobileUiText.UploadClearSelectionButton</button>
+        </div>
+    </section>
+}
 
 @code {
-    protected override void OnInitialized()
+    private global::App.Mobile.Android.Media.MobileMediaCapabilitySnapshot? CapabilitySnapshot { get; set; }
+
+    private global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor? CurrentSelectedMedia { get; set; }
+
+    private string MediaResultText { get; set; } = string.Empty;
+
+    private string CapabilitySummaryText =>
+        CapabilitySnapshot?.SummaryText
+        ?? MobileUiText.UploadLoadingCapabilitySnapshot;
+
+    protected override async Task OnInitializedAsync()
     {
         NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Upload);
+        CapabilitySnapshot = await MobileMediaService.GetCapabilitySnapshotAsync();
+        await RefreshCurrentSelectedMediaAsync();
+    }
+
+    private async Task SelectVideoAsync()
+    {
+        var result = await MobileMediaService.PickVideoAsync();
+        MediaResultText = result.Message;
+        await RefreshCurrentSelectedMediaAsync();
+    }
+
+    private async Task CaptureVideoAsync()
+    {
+        var result = await MobileMediaService.CaptureVideoAsync();
+        MediaResultText = result.Message;
+        await RefreshCurrentSelectedMediaAsync();
+    }
+
+    private async Task ClearSelectedMediaAsync()
+    {
+        await SelectedMediaStore.ClearAsync();
+        MediaResultText = MobileUiText.UploadClearSelectionResultText;
+        await RefreshCurrentSelectedMediaAsync();
+    }
+
+    private async Task RefreshCurrentSelectedMediaAsync()
+    {
+        CurrentSelectedMedia = await SelectedMediaStore.GetCurrentAsync();
+    }
+
+    private static string GetCapabilityStateText(global::App.Mobile.Android.Media.MobileMediaCapabilityState? state)
+    {
+        return state is null
+            ? MobileUiText.UploadLoadingCapabilitySnapshot
+            : MobileUiText.GetMediaCapabilityStateText(state.Value);
+    }
+
+    private static string GetSelectedMediaContentTypeText(string? contentType)
+    {
+        return string.IsNullOrWhiteSpace(contentType)
+            ? MobileUiText.UploadUnknownContentTypeText
+            : contentType;
+    }
+
+    private static string FormatSelectedAt(DateTimeOffset selectedAtUtc)
+    {
+        return selectedAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss");
     }
 }
