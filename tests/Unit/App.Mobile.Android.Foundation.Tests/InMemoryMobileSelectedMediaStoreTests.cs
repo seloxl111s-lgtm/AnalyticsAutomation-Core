@@ -54,6 +54,52 @@ public sealed class InMemoryMobileSelectedMediaStoreTests
         Assert.Null(stream);
     }
 
+    [Fact]
+    public async Task TakeCurrentAsyncReturnsEntryAndClearsCurrentDescriptor()
+    {
+        var store = new global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore();
+        var descriptor = CreateDescriptor();
+
+        await store.CacheAsync(
+            descriptor,
+            () => Task.FromResult<global::System.IO.Stream>(
+                new global::System.IO.MemoryStream([11, 12, 13])));
+
+        var entry = await store.TakeCurrentAsync();
+        var current = await store.GetCurrentAsync();
+
+        Assert.NotNull(entry);
+        Assert.Equal(descriptor, entry!.Descriptor);
+        Assert.Null(current);
+    }
+
+    [Fact]
+    public async Task TakeCurrentAsyncClearsCurrentReadHandle()
+    {
+        var store = new global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore();
+
+        await store.CacheAsync(
+            CreateDescriptor(),
+            () => Task.FromResult<global::System.IO.Stream>(
+                new global::System.IO.MemoryStream([21, 22, 23])));
+
+        var entry = await store.TakeCurrentAsync();
+        var stream = await store.OpenCurrentReadAsync();
+
+        Assert.NotNull(entry);
+        Assert.Null(stream);
+    }
+
+    [Fact]
+    public async Task TakeCurrentAsyncReturnsNullWhenNothingSelected()
+    {
+        var store = new global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore();
+
+        var entry = await store.TakeCurrentAsync();
+
+        Assert.Null(entry);
+    }
+
     private static global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor CreateDescriptor()
     {
         return new global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor(

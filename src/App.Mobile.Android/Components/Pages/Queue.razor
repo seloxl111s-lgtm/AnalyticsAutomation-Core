@@ -37,6 +37,34 @@
 
                         <p class="queue-item-summary">@item.SummaryText</p>
 
+                        @if (item.LocalMediaDraft is not null)
+                        {
+                            <section class="queue-media-draft">
+                                <dl class="queue-item-meta">
+                                    <div>
+                                        <dt>@MobileUiText.QueueMediaSourceLabel</dt>
+                                        <dd>@MobileUiText.GetSelectedMediaSourceText(item.LocalMediaDraft.Source)</dd>
+                                    </div>
+                                    <div>
+                                        <dt>@MobileUiText.QueueMediaFileNameLabel</dt>
+                                        <dd>@item.LocalMediaDraft.FileName</dd>
+                                    </div>
+                                    <div>
+                                        <dt>@MobileUiText.QueueMediaContentTypeLabel</dt>
+                                        <dd>@GetLocalMediaContentTypeText(item.LocalMediaDraft.ContentType)</dd>
+                                    </div>
+                                    <div>
+                                        <dt>@MobileUiText.QueueMediaSelectedAtLabel</dt>
+                                        <dd>@FormatCreatedAt(item.LocalMediaDraft.SelectedAtUtc)</dd>
+                                    </div>
+                                    <div>
+                                        <dt>@MobileUiText.QueueMediaDraftStateLabel</dt>
+                                        <dd>@MobileUiText.QueueMediaDraftLocalOnlyText</dd>
+                                    </div>
+                                </dl>
+                            </section>
+                        }
+
                         <dl class="queue-item-meta">
                             <div>
                                 <dt>@MobileUiText.QueueCreatedAtLabel</dt>
@@ -70,7 +98,7 @@
 
         @if (!string.IsNullOrWhiteSpace(ResultText))
         {
-            <p class="queue-result">@ResultText</p>
+            <p class="@(ResultIsWarning ? "queue-result queue-result-warning" : "queue-result")">@ResultText</p>
         }
     </section>
 }
@@ -82,6 +110,8 @@
     private bool IsLoading { get; set; }
 
     private string ResultText { get; set; } = string.Empty;
+
+    private bool ResultIsWarning { get; set; }
 
     private bool ShowQueueFoundation =>
         FeatureFlagReader.IsEnabled(global::App.Mobile.Android.Services.Stubs.StubFeatureFlagReader.QueueFoundationCardFlag);
@@ -102,6 +132,7 @@
     {
         var result = await MobileOutboxService.RetryAsync(itemId);
         ResultText = result.Message;
+        ResultIsWarning = !result.Applied;
         await LoadItemsAsync();
     }
 
@@ -109,6 +140,7 @@
     {
         var result = await MobileOutboxService.RemoveAsync(itemId);
         ResultText = result.Message;
+        ResultIsWarning = !result.Applied;
         await LoadItemsAsync();
     }
 
@@ -128,5 +160,12 @@
     private static string FormatCreatedAt(DateTimeOffset createdAtUtc)
     {
         return createdAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss");
+    }
+
+    private static string GetLocalMediaContentTypeText(string? contentType)
+    {
+        return string.IsNullOrWhiteSpace(contentType)
+            ? MobileUiText.UploadUnknownContentTypeText
+            : contentType;
     }
 }

@@ -56,6 +56,29 @@ internal sealed class InMemoryMobileSelectedMediaStore :
         return OpenCurrentReadCoreAsync(openReadFactory);
     }
 
+    public Task<global::App.Mobile.Android.Media.LocalSelectedMediaStoreEntry?> TakeCurrentAsync(
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        lock (_gate)
+        {
+            if (_currentDescriptor is null || _openCurrentReadFactory is null)
+            {
+                return Task.FromResult<global::App.Mobile.Android.Media.LocalSelectedMediaStoreEntry?>(null);
+            }
+
+            var entry = new global::App.Mobile.Android.Media.LocalSelectedMediaStoreEntry(
+                Descriptor: _currentDescriptor,
+                OpenReadAsync: _openCurrentReadFactory);
+
+            _currentDescriptor = null;
+            _openCurrentReadFactory = null;
+
+            return Task.FromResult<global::App.Mobile.Android.Media.LocalSelectedMediaStoreEntry?>(entry);
+        }
+    }
+
     public Task ClearAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -23,6 +23,7 @@
     <Compile Include="..\..\..\src\App.Mobile.Android\Media\MobileMediaCapabilityState.cs" Link="LinkedProduction\Media\MobileMediaCapabilityState.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Media\MobileMediaSource.cs" Link="LinkedProduction\Media\MobileMediaSource.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Media\LocalSelectedMediaDescriptor.cs" Link="LinkedProduction\Media\LocalSelectedMediaDescriptor.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Media\LocalSelectedMediaStoreEntry.cs" Link="LinkedProduction\Media\LocalSelectedMediaStoreEntry.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\State\MobileShellMode.cs" Link="LinkedProduction\State\MobileShellMode.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Options\MobileShellOptions.cs" Link="LinkedProduction\Options\MobileShellOptions.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Options\MobileShellOptionsValidator.cs" Link="LinkedProduction\Options\MobileShellOptionsValidator.cs" />
@@ -36,6 +37,7 @@
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileSelectedMediaStore.cs" Link="LinkedProduction\Services\Abstractions\IMobileSelectedMediaStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemStatus.cs" Link="LinkedProduction\Outbox\PendingSyncItemStatus.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItem.cs" Link="LinkedProduction\Outbox\PendingSyncItem.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemLocalMediaDraft.cs" Link="LinkedProduction\Outbox\PendingSyncItemLocalMediaDraft.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncOperationResult.cs" Link="LinkedProduction\Outbox\PendingSyncOperationResult.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\InMemoryMobileSelectedMediaStore.cs" Link="LinkedProduction\Services\Local\InMemoryMobileSelectedMediaStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Stubs\StubFeatureFlagReader.cs" Link="LinkedProduction\Services\Stubs\StubFeatureFlagReader.cs" />

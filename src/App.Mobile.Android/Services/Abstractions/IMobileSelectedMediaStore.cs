@@ -13,6 +13,9 @@ internal interface IMobileSelectedMediaStore
     Task<global::System.IO.Stream?> OpenCurrentReadAsync(
         CancellationToken cancellationToken = default);
 
+    Task<global::App.Mobile.Android.Media.LocalSelectedMediaStoreEntry?> TakeCurrentAsync(
+        CancellationToken cancellationToken = default);
+
     Task ClearAsync(
         CancellationToken cancellationToken = default);
 }

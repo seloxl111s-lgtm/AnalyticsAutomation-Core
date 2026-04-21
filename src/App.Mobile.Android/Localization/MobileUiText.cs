@@ -44,8 +44,8 @@ internal static class MobileUiText
     public const string UploadClearSelectionButton = "Очистить локальный выбор";
     public const string UploadClearSelectionResultText = "Локальный выбранный медиафайл очищен.";
     public const string UploadUnknownContentTypeText = "Неизвестно";
-    public const string UploadEnqueueStubButton = "Добавить в локальную очередь (заглушка)";
-    public const string UploadOutboxActionHint = "Локальный outbox foundation добавляет только in-memory элемент-заглушку без upload, sync и backend-действий.";
+    public const string UploadEnqueueStubButton = "Передать выбранное видео в локальную очередь";
+    public const string UploadOutboxActionHint = "Локальный handoff переносит только текущее выбранное видео в черновик очереди в памяти устройства. Upload, sync и backend-действия не выполняются.";
 
     public const string QueueTitle = "Очередь";
     public const string QueueIntro = "Это локальный экран-заглушка для будущей очереди. На этом срезе нет upload, sync и бизнес-действий.";
@@ -59,6 +59,12 @@ internal static class MobileUiText
     public const string QueueCreatedAtLabel = "Создано";
     public const string QueueStatusLabel = "Статус";
     public const string QueueLastActionLabel = "Последнее действие";
+    public const string QueueMediaSourceLabel = "Источник видео";
+    public const string QueueMediaFileNameLabel = "Имя файла";
+    public const string QueueMediaContentTypeLabel = "MIME-тип";
+    public const string QueueMediaSelectedAtLabel = "Выбрано";
+    public const string QueueMediaDraftStateLabel = "Состояние черновика";
+    public const string QueueMediaDraftLocalOnlyText = "Локальный медиачерновик привязан к файлу только в текущем запуске";
 
     public const string NotFoundTitle = "Страница не найдена";
     public const string NotFoundMessage = "Запрошенный экран не найден в текущей локальной оболочке.";
@@ -67,6 +73,9 @@ internal static class MobileUiText
     public const string PendingSyncEnqueuedLastAction = "Элемент добавлен в локальную очередь как заглушка.";
     public const string PendingSyncRetriedLastAction = "Выполнен локальный повтор без отправки.";
     public const string PendingSyncItemNotFoundText = "Элемент локальной очереди не найден.";
+    public const string PendingSyncNoCurrentSelectionText = "Сначала выберите или запишите видео, чтобы передать его в локальную очередь.";
+    public const string PendingSyncMediaDraftSummary = "Элемент очереди содержит только локальный медиачерновик в памяти устройства без upload, sync и backend-действий.";
+    public const string PendingSyncMediaDraftEnqueuedLastAction = "Выбранное видео передано в локальный черновик очереди.";
 
     public static string GetShellModeText(global::App.Mobile.Android.State.MobileShellMode mode)
     {
@@ -123,6 +132,11 @@ internal static class MobileUiText
         return $"Локальный элемент очереди #{sequence}";
     }
 
+    public static string GetPendingSyncMediaDraftTitle(string fileName)
+    {
+        return $"Локальный медиачерновик: {fileName}";
+    }
+
     public static string GetPendingSyncEnqueueResultText(string title)
     {
         return $"Элемент «{title}» добавлен в локальную очередь как заглушка.";
@@ -136,6 +150,11 @@ internal static class MobileUiText
     public static string GetPendingSyncRemoveResultText(string title)
     {
         return $"Элемент «{title}» удалён из локальной очереди.";
+    }
+
+    public static string GetPendingSyncMediaDraftHandoffResultText(string fileName)
+    {
+        return $"Видео «{fileName}» передано в локальный черновик очереди.";
     }
 
     public static string GetUploadNativePickerSuccessText(string fileName)

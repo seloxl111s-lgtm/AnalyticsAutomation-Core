@@ -1,11 +1,11 @@
 # Coder 3 Canonical Mobile Import
 
 ## Current step
-- MOB-CANON-IMPORT-03 PR-ready replay from fresh main.
+- MOB-CANON-IMPORT-04 PR-ready replay from fresh main.
 
 ## Base and coordination state
-- Base main SHA at task start: `0015c7d`
-- PR #95 is merged into `main`.
+- Base main SHA at task start: `1a63bf2`
+- PR #96 is merged into `main`.
 - Coordination log source: GitHub issue `#89`, not a repo file.
 - Latest coordination entries reviewed:
   - `#90` S2-37 Admin Review API AuthZ Scope
@@ -16,23 +16,21 @@
   - `docs/handoffs/s1-11-coder3-android-integration.md`
   - `docs/handoffs/s1-11-backend-integration-note.md`
   - `docs/handoffs/s1-12-sprint1-quality-gate.md`
-  - `docs/task-cards/MOB-CANON-IMPORT-02.txt`
   - `docs/task-cards/MOB-CANON-IMPORT-03.txt`
+  - `docs/task-cards/MOB-CANON-IMPORT-04.txt`
 
 ## Scope restored in this PR slice
-- Local in-memory outbox foundation.
-- PendingSyncItem local models.
-- IMobileOutboxService.
-- StubMobileOutboxService.
-- Upload local enqueue stub action.
-- Queue local item rendering.
-- Retry/remove local actions.
-- Minimal App.Mobile.Android foundation tests for the local outbox service.
+- Selected-media to outbox local handoff.
+- LocalSelectedMediaStoreEntry.
+- PendingSyncItemLocalMediaDraft.
+- TakeCurrentAsync on selected-media store.
+- Selected-media-aware outbox enqueue.
+- Queue media-linked draft details.
+- Unit tests for selected-media handoff and outbox behavior.
 
 ## Explicitly not included
-- selected-media to outbox handoff
 - duplicate-precheck
-- restart snapshots
+- restart-resilience snapshots
 - repair/rebind
 - report draft
 - backend S1 adapters
@@ -47,8 +45,8 @@
 - persistence
 
 ## Source used
-- IMPORT-03 source commit: `ed37abf feat(mobile): restore local outbox foundation`
-- PR-ready replay branch base: fresh `main` at `0015c7d`
+- IMPORT-04 source commit: `5f0459a feat(mobile): connect selected media to local outbox draft`
+- PR-ready replay branch base: fresh `main` at `1a63bf2`
 - canonical current project: `C:\Users\yarad\source\repos\AndroidA_core`
 
 ## Validation plan
@@ -56,19 +54,13 @@
 - `dotnet build .\src\App.Mobile.Android\App.Mobile.Android.csproj -f net10.0-android -m:1`
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
-## Physical Android runtime check
-- Result: passed.
-- Runtime status: import03 phone ok.
-- Upload route still opens.
-- Media picker from IMPORT-02 still works.
-- Upload local enqueue stub action works.
-- Queue route opens.
-- Queue renders local PendingSyncItem.
-- Retry stub action works.
-- Remove action works.
-
 ## Manual steps pending
-- none for IMPORT-03.
+- Physical Android runtime check for selected-media handoff from Upload to Queue.
+- Confirm selected media can be transferred from Upload to Queue.
+- Confirm selected local media card clears after successful handoff.
+- Confirm Queue renders media-linked item details.
+- Confirm no selected media warning works.
+- Confirm retry/remove still work.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
@@ -78,5 +70,4 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- After this PR merges: MOB-CANON-IMPORT-04 selected-media to outbox draft handoff PR slice.
-- Do not start MOB-CANON-IMPORT-04 in this branch.
+- Do not start MOB-CANON-IMPORT-05 until this PR-ready branch has phone-check evidence and owner approval.

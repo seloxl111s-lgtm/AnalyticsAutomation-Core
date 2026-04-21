@@ -127,6 +127,11 @@
     line-height: 1.45;
 }
 
+.outbox-result-warning {
+    background: #fff3e0;
+    color: #9a3412;
+}
+
 @media (max-width: 640px) {
     .media-capability-list div,
     .selected-media-grid div {
