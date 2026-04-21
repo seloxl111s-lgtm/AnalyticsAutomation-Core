@@ -19,6 +19,11 @@ else if (IsLoading)
 else
 {
     <section class="reports-shell-card">
+        <div class="reports-readiness-strip">
+            <span class="reports-readiness-label">@MobileUiText.ReportsStatusStripTitle</span>
+            <p>@MobileUiText.ReportsStatusStripText</p>
+        </div>
+
         <div class="reports-shell-actions">
             <button type="button" class="btn btn-primary" @onclick="CreateDraftAsync">@MobileUiText.ReportsCreateFpvDraftButton</button>
         </div>

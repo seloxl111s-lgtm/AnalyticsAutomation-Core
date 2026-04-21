@@ -29,6 +29,7 @@ Report-first baseline means:
 - no sync
 - no upload
 - no production reports engine
+- no lookup/filter/profile UX
 
 ## BusinessObject and backend boundary
 - TEAM COORDINATION LOG #89 records the Android `businessObjectKey` decision:

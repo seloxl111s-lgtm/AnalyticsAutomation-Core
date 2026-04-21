@@ -53,7 +53,7 @@ Direction:
 - repair/rebind = restored attachment local-file access repair
 
 ## Proposed UX direction
-- bottom navigation should eventually move toward a `Полеты` / `Профиль` style
+- bottom navigation should prioritize the local `Полеты` report draft list for this baseline
 - the first report screen should be a local `Полеты` / `Отчеты` list
 - the create action should expose `Создать отчет FPV`
 - the report draft form should be sectioned
@@ -119,4 +119,8 @@ Scope:
 
 ## Implementation note
 - `MOB-CANON-REPORT-01` starts the local report draft shell in `App.Mobile.Android` only
-- this step must not invent final backend report contracts or lookup catalogs
+- `MOB-CANON-REPORT-01` is runtime-verified on physical Android
+- `MOB-CANON-REPORT-02` implements the first report-first UX correction in code
+- `Загрузка` is no longer the main user entry; media actions now live inside `ReportDraft`
+- no final backend report contracts or lookup catalogs are invented in this step
+- no profile UX, lookup/filter UX, backend save, `PreUploadCheck`, or `UploadReceipt` is included in the baseline replay

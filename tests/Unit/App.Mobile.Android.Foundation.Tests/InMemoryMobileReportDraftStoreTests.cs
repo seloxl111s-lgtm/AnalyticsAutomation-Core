@@ -88,6 +88,23 @@ public sealed class InMemoryMobileReportDraftStoreTests
             string.Equals(field.FieldKey, "businessObjectKey", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task AttachSelectedVideoAsync_RepeatedAttachOfSameSelectedVideoDoesNotCrash()
+    {
+        var store = CreateStore();
+        var draft = await store.CreateFpvDraftAsync();
+        var descriptor = CreateDescriptor();
+
+        var firstAttach = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
+        var secondAttach = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
+
+        Assert.NotNull(firstAttach);
+        Assert.NotNull(secondAttach);
+        Assert.Equal(2, secondAttach!.Attachments.Count);
+        Assert.All(secondAttach.Attachments, attachment =>
+            Assert.Equal(global::App.Mobile.Android.Reports.MobileReportAttachmentKind.Video, attachment.Kind));
+    }
+
     private static global::App.Mobile.Android.Services.Local.InMemoryMobileReportDraftStore CreateStore()
     {
         return new global::App.Mobile.Android.Services.Local.InMemoryMobileReportDraftStore(

@@ -228,6 +228,31 @@ internal static class MobileUiText
     public const string PendingSyncRestoredMetadataLastActionText =
         "После перезапуска восстановлены только локальные метаданные черновика. Реальный доступ к файлу нужно привязать повторно позже.";
 
+    public const string HomeLandingTitle = "Локальная мобильная оболочка";
+    public const string HomeLandingText =
+        "Основной локальный сценарий сейчас начинается со списка полетов и черновиков отчетов. Экран загрузки остается служебным и диагностическим.";
+    public const string HomeOpenReportsButton = "Перейти в Полеты";
+
+    public const string ReportsStatusStripTitle = "Локальный статус";
+    public const string ReportsStatusStripText =
+        "Список работает только как report-first baseline: локальные черновики, без backend-сохранения, sync и upload.";
+    public const string ReportDraftMediaSectionTitle = "Медиа-вложения отчета";
+    public const string ReportDraftPickVideoButton = "Выбрать видео";
+    public const string ReportDraftCaptureVideoButton = "Записать видео";
+    public const string ReportDraftAttachSelectedVideoButton = "Прикрепить уже выбранное локальное видео";
+    public const string ReportDraftAttachVideoFailureText =
+        "Не удалось прикрепить видео к локальному черновику отчета. Проверьте локальный выбор и повторите действие без backend-вызовов.";
+    public const string ReportDraftMediaOperationLoadingText =
+        "Локальная media-операция выполняется. После завершения результат будет прикреплен к текущему черновику как метаданные.";
+    public const string ReportDraftVideoBlockTitle = "Видео";
+    public const string ReportDraftPhotoBlockTitle = "Фото готового дрона";
+    public const string ReportDraftLogFileBlockTitle = "Лог-файл";
+    public const string ReportDraftFutureAttachmentNote =
+        "Этот тип вложения останется локальной заглушкой до отдельного среза без backend-save, upload и финальных контрактов.";
+
+    public const string UploadServiceScreenNote =
+        "Служебный экран. Основной сценарий выбора видео находится внутри черновика отчета.";
+
     public static string GetShellModeText(global::App.Mobile.Android.State.MobileShellMode mode)
     {
         return mode switch

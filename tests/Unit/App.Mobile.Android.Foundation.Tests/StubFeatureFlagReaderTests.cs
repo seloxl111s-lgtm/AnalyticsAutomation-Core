@@ -23,6 +23,12 @@ public sealed class StubFeatureFlagReaderTests
     }
 
     [Fact]
+    public void ReportFirstMediaAttachmentFlagIsEnabled()
+    {
+        Assert.True(Reader.IsEnabled(global::App.Mobile.Android.Services.Stubs.StubFeatureFlagReader.ReportFirstMediaAttachmentFlag));
+    }
+
+    [Fact]
     public void UnknownFlagIsDisabled()
     {
         Assert.False(Reader.IsEnabled("mobile.unknown.flag"));

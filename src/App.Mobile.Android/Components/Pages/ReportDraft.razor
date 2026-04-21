@@ -1,10 +1,10 @@
 @page "/reports/{DraftId}"
 @using global::App.Mobile.Android.Localization
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileMediaService MobileMediaService
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileReportDraftStore ReportDraftStore
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileLookupCatalogProvider LookupCatalogProvider
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore SelectedMediaStore
-@inject NavigationManager NavigationManager
 
 @if (Draft is null)
 {
@@ -65,15 +65,67 @@ else
         }
 
         <section class="report-draft-section">
-            <h3>@MobileUiText.ReportSectionAttachmentsTitle</h3>
+            <h3>@MobileUiText.ReportDraftMediaSectionTitle</h3>
 
-            <div class="report-draft-attachment-actions">
-                <button type="button" class="btn btn-outline-primary" @onclick="AttachCurrentVideoAsync">
-                    @MobileUiText.ReportDraftAttachCurrentVideoButton
-                </button>
+            <div class="report-draft-media-shell">
+                <article class="report-draft-media-card">
+                    <div class="report-draft-media-card-header">
+                        <div>
+                            <h4>@MobileUiText.ReportDraftVideoBlockTitle</h4>
+                            <p>@MobileUiText.ReportDraftLocalOnlyNote</p>
+                        </div>
+                    </div>
+
+                    <div class="report-draft-attachment-actions">
+                        <button type="button"
+                                class="btn btn-primary"
+                                @onclick="PickAndAttachVideoAsync"
+                                disabled="@IsMediaOperationInProgress">
+                            @MobileUiText.ReportDraftPickVideoButton
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                @onclick="CaptureAndAttachVideoAsync"
+                                disabled="@IsMediaOperationInProgress">
+                            @MobileUiText.ReportDraftCaptureVideoButton
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                @onclick="AttachCurrentVideoAsync"
+                                disabled="@IsMediaOperationInProgress">
+                            @MobileUiText.ReportDraftAttachSelectedVideoButton
+                        </button>
+                    </div>
+                </article>
+
+                <article class="report-draft-media-card report-draft-media-card-disabled">
+                    <div class="report-draft-media-card-header">
+                        <div>
+                            <h4>@MobileUiText.ReportDraftPhotoBlockTitle</h4>
+                            <p>@MobileUiText.ReportDraftFutureAttachmentNote</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-secondary" disabled>Скоро</button>
+                </article>
+
+                <article class="report-draft-media-card report-draft-media-card-disabled">
+                    <div class="report-draft-media-card-header">
+                        <div>
+                            <h4>@MobileUiText.ReportDraftLogFileBlockTitle</h4>
+                            <p>@MobileUiText.ReportDraftFutureAttachmentNote</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-secondary" disabled>Скоро</button>
+                </article>
             </div>
 
-            @if (!string.IsNullOrWhiteSpace(ResultText))
+            @if (IsMediaOperationInProgress)
+            {
+                <p class="report-draft-result">@MobileUiText.ReportDraftMediaOperationLoadingText</p>
+            }
+            else if (!string.IsNullOrWhiteSpace(ResultText))
             {
                 <p class="@(ResultIsWarning ? "report-draft-result report-draft-result-warning" : "report-draft-result")">@ResultText</p>
             }
@@ -138,17 +190,59 @@ else
 
     private bool ResultIsWarning { get; set; }
 
+    private bool IsMediaOperationInProgress { get; set; }
+
     [Parameter]
     public string DraftId { get; set; } = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Reports);
-        Catalog = await LookupCatalogProvider.GetReportDraftFieldsAsync();
+        Catalog ??= await LookupCatalogProvider.GetReportDraftFieldsAsync();
         Draft = await ReportDraftStore.GetDraftAsync(DraftId);
     }
 
+    private async Task PickAndAttachVideoAsync()
+    {
+        await RunMediaAttachAsync(() => MobileMediaService.PickVideoAsync());
+    }
+
+    private async Task CaptureAndAttachVideoAsync()
+    {
+        await RunMediaAttachAsync(() => MobileMediaService.CaptureVideoAsync());
+    }
+
     private async Task AttachCurrentVideoAsync()
+    {
+        await AttachCurrentSelectionAsync();
+    }
+
+    private async Task RunMediaAttachAsync(
+        Func<Task<global::App.Mobile.Android.Media.MobileMediaOperationResult>> operation)
+    {
+        IsMediaOperationInProgress = true;
+        ResultText = string.Empty;
+        ResultIsWarning = false;
+
+        try
+        {
+            var result = await operation();
+            if (!IsSuccessfulMediaOperation(result.Status))
+            {
+                ResultText = result.Message;
+                ResultIsWarning = true;
+                return;
+            }
+
+            await AttachCurrentSelectionAsync();
+        }
+        finally
+        {
+            IsMediaOperationInProgress = false;
+        }
+    }
+
+    private async Task AttachCurrentSelectionAsync()
     {
         if (Draft is null)
         {
@@ -167,8 +261,8 @@ else
         if (updatedDraft is null)
         {
             Draft = null;
-            ResultText = string.Empty;
-            ResultIsWarning = false;
+            ResultText = MobileUiText.ReportDraftAttachVideoFailureText;
+            ResultIsWarning = true;
             return;
         }
 
@@ -192,6 +286,13 @@ else
             .Where(value => value is not null)
             .Select(value => value!)
             .ToArray();
+    }
+
+    private static bool IsSuccessfulMediaOperation(global::App.Mobile.Android.Media.MobileMediaOperationStatus status)
+    {
+        return status is global::App.Mobile.Android.Media.MobileMediaOperationStatus.DeviceSelectionCompleted
+            or global::App.Mobile.Android.Media.MobileMediaOperationStatus.DeviceCaptureCompleted
+            or global::App.Mobile.Android.Media.MobileMediaOperationStatus.StubCompleted;
     }
 
     private static string GetSectionTitle(string sectionKey)

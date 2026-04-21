@@ -13,6 +13,32 @@
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
+.reports-readiness-strip {
+    display: grid;
+    gap: 0.45rem;
+    padding: 0.9rem 1rem;
+    border-radius: 0.95rem;
+    background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+    color: #eff6ff;
+}
+
+.reports-readiness-strip p {
+    margin: 0;
+    line-height: 1.45;
+}
+
+.reports-readiness-label {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
 .reports-shell-actions {
     display: flex;
     justify-content: flex-start;
@@ -94,3 +120,4 @@
     margin: 0.2rem 0 0;
     color: #0f172a;
 }
+
