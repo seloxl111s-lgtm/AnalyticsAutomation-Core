@@ -44,6 +44,12 @@ internal static class MobileUiText
     public const string UploadClearSelectionButton = "Очистить локальный выбор";
     public const string UploadClearSelectionResultText = "Локальный выбранный медиафайл очищен.";
     public const string UploadUnknownContentTypeText = "Неизвестно";
+    public const string LocalDuplicatePrecheckCardTitle = "Локальная предварительная проверка очереди";
+    public const string LocalDuplicatePrecheckStatusLabel = "Статус";
+    public const string LocalDuplicatePrecheckNoCurrentSelectionText = "Сначала выберите или запишите видео. Локальная предварительная проверка очереди пока ничего не сравнивает.";
+    public const string LocalDuplicatePrecheckNoKnownDuplicateText = "Локальная предварительная проверка не нашла дубликатов в текущей очереди. Это не финальная backend-проверка.";
+    public const string LocalDuplicatePrecheckLikelyAlreadyQueuedText = "Похоже, выбранное видео уже есть в локальной очереди. Повторная передача заблокирована только локальной предварительной проверкой, это не финальная backend-проверка.";
+    public const string LocalDuplicatePrecheckLocalOnlyNote = "Сравнение выполняется только по текущему локальному выбору и draft-элементам очереди в памяти устройства.";
     public const string UploadEnqueueStubButton = "Передать выбранное видео в локальную очередь";
     public const string UploadOutboxActionHint = "Локальный handoff переносит только текущее выбранное видео в черновик очереди в памяти устройства. Upload, sync и backend-действия не выполняются.";
 
@@ -112,6 +118,18 @@ internal static class MobileUiText
             global::App.Mobile.Android.Media.MobileMediaSource.FilePicker => "Файловый выбор",
             global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo => "Галерея",
             global::App.Mobile.Android.Media.MobileMediaSource.CameraCapture => "Камера",
+            _ => "Неизвестно"
+        };
+    }
+
+    public static string GetLocalDuplicatePrecheckStatusText(
+        global::App.Mobile.Android.DuplicatePrecheck.LocalDuplicatePrecheckStatus status)
+    {
+        return status switch
+        {
+            global::App.Mobile.Android.DuplicatePrecheck.LocalDuplicatePrecheckStatus.NoCurrentSelection => "Нет выбранного видео",
+            global::App.Mobile.Android.DuplicatePrecheck.LocalDuplicatePrecheckStatus.NoKnownDuplicateInOutbox => "Локальных дубликатов не найдено",
+            global::App.Mobile.Android.DuplicatePrecheck.LocalDuplicatePrecheckStatus.LikelyAlreadyQueued => "Вероятный дубликат уже в очереди",
             _ => "Неизвестно"
         };
     }

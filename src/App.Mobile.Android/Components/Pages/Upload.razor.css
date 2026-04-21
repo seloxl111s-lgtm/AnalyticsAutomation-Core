@@ -38,12 +38,14 @@
 }
 
 .media-capability-list,
-.selected-media-grid {
+.selected-media-grid,
+.precheck-grid {
     margin: 0 0 1rem;
 }
 
 .media-capability-list div,
-.selected-media-grid div {
+.selected-media-grid div,
+.precheck-grid div {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
@@ -52,7 +54,8 @@
 }
 
 .media-capability-list div:first-child,
-.selected-media-grid div:first-child {
+.selected-media-grid div:first-child,
+.precheck-grid div:first-child {
     border-top: 0;
     padding-top: 0;
 }
@@ -60,12 +63,15 @@
 .media-capability-list dt,
 .media-capability-list dd,
 .selected-media-grid dt,
-.selected-media-grid dd {
+.selected-media-grid dd,
+.precheck-grid dt,
+.precheck-grid dd {
     margin: 0;
 }
 
 .media-capability-list dd,
-.selected-media-grid dd {
+.selected-media-grid dd,
+.precheck-grid dd {
     font-weight: 600;
     text-align: right;
 }
@@ -104,6 +110,36 @@
     border-top-color: #d7e7db;
 }
 
+.precheck-card {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #f4d9a6;
+    border-radius: 0.9rem;
+    background: #fff8ec;
+    color: #6c4206;
+}
+
+.precheck-card h3 {
+    margin: 0 0 0.85rem;
+    font-size: 1rem;
+}
+
+.precheck-grid div {
+    border-top-color: #f4d9a6;
+}
+
+.precheck-message {
+    margin: 0 0 0.5rem;
+    line-height: 1.45;
+}
+
+.precheck-note {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: #8a5a16;
+}
+
 .outbox-foundation-block {
     margin-top: 1rem;
     padding: 1rem;
@@ -134,13 +170,15 @@
 
 @media (max-width: 640px) {
     .media-capability-list div,
-    .selected-media-grid div {
+    .selected-media-grid div,
+    .precheck-grid div {
         flex-direction: column;
         align-items: flex-start;
     }
 
     .media-capability-list dd,
-    .selected-media-grid dd {
+    .selected-media-grid dd,
+    .precheck-grid dd {
         text-align: left;
     }
 }

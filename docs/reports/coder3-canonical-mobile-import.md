@@ -1,11 +1,11 @@
 # Coder 3 Canonical Mobile Import
 
 ## Current step
-- MOB-CANON-IMPORT-04 PR-ready replay from fresh main.
+- MOB-CANON-IMPORT-05 PR-ready replay from fresh main.
 
 ## Base and coordination state
-- Base main SHA at task start: `1a63bf2`
-- PR #96 is merged into `main`.
+- Base main SHA at task start: `fb4d589`
+- PR #97 is merged into `main`.
 - Coordination log source: GitHub issue `#89`, not a repo file.
 - Latest coordination entries reviewed:
   - `#90` S2-37 Admin Review API AuthZ Scope
@@ -16,20 +16,18 @@
   - `docs/handoffs/s1-11-coder3-android-integration.md`
   - `docs/handoffs/s1-11-backend-integration-note.md`
   - `docs/handoffs/s1-12-sprint1-quality-gate.md`
-  - `docs/task-cards/MOB-CANON-IMPORT-03.txt`
   - `docs/task-cards/MOB-CANON-IMPORT-04.txt`
+  - `docs/task-cards/MOB-CANON-IMPORT-05.txt`
 
 ## Scope restored in this PR slice
-- Selected-media to outbox local handoff.
-- LocalSelectedMediaStoreEntry.
-- PendingSyncItemLocalMediaDraft.
-- TakeCurrentAsync on selected-media store.
-- Selected-media-aware outbox enqueue.
-- Queue media-linked draft details.
-- Unit tests for selected-media handoff and outbox behavior.
+- Local duplicate-precheck models.
+- `ILocalDuplicatePrecheckService`.
+- `LocalOutboxDuplicatePrecheckService`.
+- Duplicate-aware selected-media handoff.
+- Upload local precheck card.
+- Unit tests for local duplicate-precheck and outbox duplicate behavior.
 
 ## Explicitly not included
-- duplicate-precheck
 - restart-resilience snapshots
 - repair/rebind
 - report draft
@@ -38,6 +36,7 @@
 - UploadReceipt
 - sync
 - download
+- final dedupe/fraud logic
 - direct upload runtime
 - App.UI.Shared changes
 - shared DTO/contracts changes
@@ -45,8 +44,8 @@
 - persistence
 
 ## Source used
-- IMPORT-04 source commit: `5f0459a feat(mobile): connect selected media to local outbox draft`
-- PR-ready replay branch base: fresh `main` at `1a63bf2`
+- IMPORT-05 source commit: `0020870 feat(mobile): restore local duplicate precheck`
+- PR-ready replay branch base: fresh `main` at `fb4d589`
 - canonical current project: `C:\Users\yarad\source\repos\AndroidA_core`
 
 ## Validation plan
@@ -55,16 +54,17 @@
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
 ## Physical Android runtime check
-- Result: passed.
-- Runtime status: import04 phone ok.
-- Selected media can be transferred from Upload to Queue.
-- Selected local media card clears after successful handoff.
-- Queue renders media-linked item details.
-- No selected media warning works.
-- Retry/remove still work.
+- Result: pending.
+- Runtime status: not_done.
+- Manual check must verify local duplicate-precheck warning and preserved non-duplicate handoff.
 
 ## Manual steps pending
-- none for IMPORT-04.
+- Physical Android runtime check for local duplicate-precheck warning and preserved non-duplicate handoff.
+- Confirm duplicate current selection is blocked.
+- Confirm duplicate rejection does not clear current selected media.
+- Confirm duplicate rejection does not add a second queue item.
+- Confirm non-duplicate handoff still works.
+- Confirm retry/remove still work.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
@@ -74,5 +74,5 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- After this PR merges: MOB-CANON-IMPORT-05 local duplicate-precheck PR slice.
-- Do not start MOB-CANON-IMPORT-05 in this branch.
+- After this PR merges: MOB-CANON-IMPORT-06 restart-resilience snapshot PR slice.
+- Do not start MOB-CANON-IMPORT-06 in this branch.

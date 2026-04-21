@@ -5,6 +5,7 @@
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileMediaService MobileMediaService
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore SelectedMediaStore
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService MobileOutboxService
+@inject global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService DuplicatePrecheckService
 
 <h1>@MobileUiText.UploadTitle</h1>
 <p>@MobileUiText.UploadIntro</p>
@@ -77,6 +78,23 @@
     </section>
 }
 
+@if (CurrentSelectedMedia is not null && CurrentPrecheckResult is not null)
+{
+    <section class="precheck-card">
+        <h3>@MobileUiText.LocalDuplicatePrecheckCardTitle</h3>
+
+        <dl class="precheck-grid">
+            <div>
+                <dt>@MobileUiText.LocalDuplicatePrecheckStatusLabel</dt>
+                <dd>@MobileUiText.GetLocalDuplicatePrecheckStatusText(CurrentPrecheckResult.Status)</dd>
+            </div>
+        </dl>
+
+        <p class="precheck-message">@CurrentPrecheckResult.Message</p>
+        <p class="precheck-note">@MobileUiText.LocalDuplicatePrecheckLocalOnlyNote</p>
+    </section>
+}
+
 @if (ShowQueueFoundationAction)
 {
     <section class="outbox-foundation-block">
@@ -95,6 +113,8 @@
 
     private global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor? CurrentSelectedMedia { get; set; }
 
+    private global::App.Mobile.Android.DuplicatePrecheck.LocalDuplicatePrecheckResult? CurrentPrecheckResult { get; set; }
+
     private string MediaResultText { get; set; } = string.Empty;
 
     private string OutboxResultText { get; set; } = string.Empty;
@@ -112,7 +132,7 @@
     {
         NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Upload);
         CapabilitySnapshot = await MobileMediaService.GetCapabilitySnapshotAsync();
-        await RefreshCurrentSelectedMediaAsync();
+        await RefreshCurrentSelectionAndPrecheckAsync();
     }
 
     private async Task SelectVideoAsync()
@@ -121,7 +141,7 @@
         MediaResultText = result.Message;
         OutboxResultText = string.Empty;
         OutboxResultIsWarning = false;
-        await RefreshCurrentSelectedMediaAsync();
+        await RefreshCurrentSelectionAndPrecheckAsync();
     }
 
     private async Task CaptureVideoAsync()
@@ -130,7 +150,7 @@
         MediaResultText = result.Message;
         OutboxResultText = string.Empty;
         OutboxResultIsWarning = false;
-        await RefreshCurrentSelectedMediaAsync();
+        await RefreshCurrentSelectionAndPrecheckAsync();
     }
 
     private async Task ClearSelectedMediaAsync()
@@ -139,7 +159,7 @@
         MediaResultText = MobileUiText.UploadClearSelectionResultText;
         OutboxResultText = string.Empty;
         OutboxResultIsWarning = false;
-        await RefreshCurrentSelectedMediaAsync();
+        await RefreshCurrentSelectionAndPrecheckAsync();
     }
 
     private async Task EnqueueStubItemAsync()
@@ -148,12 +168,21 @@
         OutboxResultText = result.Message;
         OutboxResultIsWarning = !result.Applied;
         MediaResultText = string.Empty;
-        await RefreshCurrentSelectedMediaAsync();
+        await RefreshCurrentSelectionAndPrecheckAsync();
     }
 
-    private async Task RefreshCurrentSelectedMediaAsync()
+    private async Task RefreshCurrentSelectionAndPrecheckAsync()
     {
         CurrentSelectedMedia = await SelectedMediaStore.GetCurrentAsync();
+
+        if (CurrentSelectedMedia is null)
+        {
+            CurrentPrecheckResult = null;
+            return;
+        }
+
+        var items = await MobileOutboxService.GetItemsAsync();
+        CurrentPrecheckResult = DuplicatePrecheckService.CheckAgainstOutbox(CurrentSelectedMedia, items);
     }
 
     private static string GetCapabilityStateText(global::App.Mobile.Android.Media.MobileMediaCapabilityState? state)

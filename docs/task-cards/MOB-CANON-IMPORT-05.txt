@@ -1,0 +1,83 @@
+Title: MOB-CANON-IMPORT-05 - Local duplicate-precheck reconciliation
+Coder: 3
+Module: App.Mobile.Android
+Task type: repository reconciliation / local duplicate-precheck / UI capability / test coverage
+
+Base main SHA at task start:
+- fb4d589
+
+Coordination log entries reviewed:
+- #90 S2-37 Admin Review API AuthZ Scope
+- #91 S2-39 Deploy Trigger Reconciliation
+- #92 S2-40 Coordination Readiness and ChatGPT Sync Readiness
+- #94 S2-42 Formalize Manual-only Korobochka Deploy Policy
+
+Handoff/task cards reviewed:
+- docs/handoffs/s1-11-coder3-android-integration.md
+- docs/handoffs/s1-11-backend-integration-note.md
+- docs/handoffs/s1-12-sprint1-quality-gate.md
+- docs/task-cards/MOB-CANON-IMPORT-04.txt
+- docs/task-cards/MOB-CANON-IMPORT-05.txt
+
+Goal
+- Restore only the local duplicate-precheck slice from the previous mobile foundation into the canonical App.Mobile.Android project without importing restart snapshots, repair/rebind, backend integration, persistence, or shared UI changes.
+
+What changes
+- mobile only
+- local duplicate-precheck models
+- ILocalDuplicatePrecheckService
+- LocalOutboxDuplicatePrecheckService
+- duplicate-aware selected-media handoff
+- Upload local precheck card
+- unit tests for local duplicate-precheck and outbox duplicate behavior
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- local duplicate warning/precheck only against current selected media and in-memory outbox drafts
+- no backend save
+- no sync
+- no upload
+- no SQLite/local DB persistence
+
+Security
+- no auth/authz changes
+- no auth/session/device binding
+
+Observability
+- local precheck card/result text in Upload
+- build/test/handoff note
+
+Rollback
+- revert this import slice
+
+Definition of done
+- build succeeds
+- unit tests pass
+- Upload shows local precheck state for current selected media
+- duplicate handoff is blocked with warning
+- duplicate rejection does not clear current selected media
+- duplicate rejection does not add a second queue item
+- non-duplicate handoff still works
+- retry/remove still work
+- no backend integration
+- no App.UI.Shared changes
+- shared DTO/contracts unchanged
+
+Out of scope
+- restart snapshots
+- repair/rebind
+- backend integration
+- shared DTO/contracts changes
+- App.UI.Shared changes
+- PreUploadCheck
+- UploadReceipt
+- direct upload runtime
+- report draft
+- lookup/filter/profile UX
+- sync/download flow
+- final dedupe/fraud logic
