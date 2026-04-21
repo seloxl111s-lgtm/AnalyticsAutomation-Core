@@ -12,8 +12,12 @@ internal interface IMobileReportDraftStore
     Task<global::App.Mobile.Android.Reports.MobileReportDraft> CreateFpvDraftAsync(
         CancellationToken cancellationToken = default);
 
-    Task<global::App.Mobile.Android.Reports.MobileReportDraft?> AttachSelectedVideoAsync(
+    Task<global::App.Mobile.Android.Reports.MobileReportDraftOperationResult> AttachSelectedVideoAsync(
         string draftId,
         global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor descriptor,
+        CancellationToken cancellationToken = default);
+
+    Task<global::App.Mobile.Android.Reports.MobileReportDraftOperationResult> MarkDraftQueuedLocalAsync(
+        string draftId,
         CancellationToken cancellationToken = default);
 }

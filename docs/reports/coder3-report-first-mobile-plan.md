@@ -1,30 +1,11 @@
 # Coder 3 Report-First Mobile Plan
 
 ## Why this correction exists
-- previous import slices focused on media and outbox foundation
-- the owner clarified that the primary user flow is report or flight creation
-- video is attached to a report, not the top-level user object
-- reference app evidence confirms local report first, media attachment second, server id later, and upload lifecycle after report sync
-
-## Reference behavior captured
-- local report or flight is created first
-- video is added to the local report
-- video is copied or stored separately in the reference app
-- video has a separate upload lifecycle
-- server report id appears later
-- video upload binds to server report id later
-- observed fields:
-  - `device_type`
-  - `serial_number`
-  - `delivery_start`
-  - `delivery_time`
-  - `distance`
-  - `target_type`
-  - `reason`
-  - `comment`
-  - `radio_frequency`
-  - `video_frequency`
-  - `test_flight`
+- Previous import slices focused on media and outbox foundation.
+- The primary mobile flow is report or flight draft creation first.
+- Video is attached to a report, not the top-level user object.
+- The Android `businessObjectKey` decision is recorded in TEAM COORDINATION LOG #89:
+  https://github.com/uVormik/AnalyticsAutomation-Core/issues/89#issuecomment-4321720298
 
 ## Correct mobile object model direction
 Local-only foundation names, not shared DTO/contracts:
@@ -38,44 +19,38 @@ Local-only foundation names, not shared DTO/contracts:
 - `StubMobileReportLookupProvider`
 
 Direction:
-- `MobileReportDraft` is the parent
-- video, photo, and log files are attachments
-- selected-media cache feeds attachment creation
-- an outbox item should eventually reference `reportDraftId` and `attachmentId`
-- `businessObjectKey` must later come from a backend or report contract, not be invented locally
+- `MobileReportDraft` is the parent.
+- Video, photo, and log files are attachments.
+- Selected-media cache feeds attachment creation.
+- A local outbox item may reference `reportDraftId` and `attachmentId` as local metadata.
+- `businessObjectKey` must later come from a backend-controlled report/business-object binding source, not local Android state.
 
 ## Existing foundation reinterpretation
-- `AndroidNativeMediaService` = attachment source provider
-- `IMobileSelectedMediaStore` = temporary selected attachment cache
-- `IMobileOutboxService` = local pending attachment or report action queue
-- duplicate-precheck = local attachment duplicate warning only
-- snapshot stores = local draft and attachment restart-resilience foundation
-- repair/rebind = restored attachment local-file access repair
+- `AndroidNativeMediaService` = attachment source provider.
+- `IMobileSelectedMediaStore` = temporary selected attachment cache.
+- `IMobileOutboxService` = local pending attachment or report action queue.
+- duplicate-precheck = local attachment duplicate warning only.
+- snapshot stores = local draft and attachment restart-resilience foundation.
+- repair/rebind = restored attachment local-file access repair.
 
-## Proposed UX direction
-- bottom navigation should prioritize the local `Полеты` report draft list for this baseline
-- the first report screen should be a local `Полеты` / `Отчеты` list
-- the create action should expose `Создать отчет FPV`
-- the report draft form should be sectioned
-- media blocks should live inside the report draft:
-  - video
-  - ready-drone photo
-  - log file
-- lookup-heavy fields require searchable selector surfaces
-- some selectors require confirm or apply behavior
+## Baseline UX direction
+- The first report screen is a local `Полеты` / report draft list.
+- The create action exposes local FPV draft creation.
+- Media blocks live inside the report draft.
+- Duplicate same-video attachments are blocked locally.
+- The draft can be placed into the local outbox.
 
 ## What stays mobile-local for now
 - report draft shell
 - local draft state
-- local lookup stub provider
-- selector components
-- report form sections
+- local lookup stub provider as a non-production seam
+- report form shell sections
 - attachment blocks
 - Android media binding
 - outbox and draft repair and restart behavior
 
-## What must wait for coder 1
-- create report or draft contract
+## What must wait for coder 1 / backend owner
+- concrete report/business-object binding source
 - `businessObjectKey` source
 - report server id or remote id semantics
 - validation ownership
@@ -95,32 +70,18 @@ Direction:
 - no hardcoded final lookup dictionaries
 - no backend contract invention
 - no shared DTO/contracts changes
-- no `App.UI.Shared` expansion without coder 2 review
-- no production upload flow from report draft yet
-- no direct incident, fraud, or worker logic in mobile
-- no React Native or Expo copy
-
-## Safe next code step
-Recommend:
-- `MOB-CANON-REPORT-01 - Local FPV report draft shell in App.Mobile.Android`
-
-Scope:
-- `App.Mobile.Android` only
-- local route or list for report drafts
-- create local FPV draft
-- local sectioned draft screen
-- local in-memory draft store
-- stub lookup provider
-- attach the currently selected video to the draft as local attachment metadata
-- no backend save
+- no `App.UI.Shared` expansion
+- no production upload flow from report draft
 - no `PreUploadCheck`
 - no `UploadReceipt`
-- no `App.UI.Shared` changes
+- no fake `businessObjectKey`
+- no local draft id as `businessObjectKey`
+- no lookup/filter/profile UX in this baseline
+- no direct incident, fraud, or worker logic in mobile
 
-## Implementation note
-- `MOB-CANON-REPORT-01` starts the local report draft shell in `App.Mobile.Android` only
-- `MOB-CANON-REPORT-01` is runtime-verified on physical Android
-- `MOB-CANON-REPORT-02` implements the first report-first UX correction in code
-- `Загрузка` is no longer the main user entry; media actions now live inside `ReportDraft`
-- no final backend report contracts or lookup catalogs are invented in this step
-- no profile UX, lookup/filter UX, backend save, `PreUploadCheck`, or `UploadReceipt` is included in the baseline replay
+## Current baseline replay
+- `MOB-CANON-REPORT-00` aligns the local report-first direction.
+- `MOB-CANON-REPORT-01` adds the local FPV report draft shell.
+- `MOB-CANON-REPORT-02` moves media attachment UX into `ReportDraft`.
+- `MOB-CANON-REPORT-03` makes report attachments duplicate-safe and queueable.
+- Local queue action is not backend report save and does not invent `businessObjectKey`.

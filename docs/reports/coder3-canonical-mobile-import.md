@@ -27,6 +27,7 @@
 - Media selection/capture inside report draft.
 - Duplicate-safe attachment behavior inside draft.
 - Local report draft queue action.
+- Queue rendering for local report draft pending items.
 
 ## Explicitly not included
 - production `PreUploadCheck`
@@ -53,6 +54,7 @@
 - Production direction is Option 1: Android must obtain `businessObjectKey` from a backend-controlled report/business-object binding source before `PreUploadCheck`.
 - The concrete backend source/endpoint/contract remains undocumented.
 - Local report draft ids are not `businessObjectKey`.
+- Local queue action is not backend report save.
 - Production `PreUploadCheck` runtime remains blocked.
 - This slice is Android-local report/business-object UX replay only.
 

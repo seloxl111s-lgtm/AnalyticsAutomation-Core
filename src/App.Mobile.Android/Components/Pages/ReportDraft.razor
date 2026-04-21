@@ -3,6 +3,7 @@
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileMediaService MobileMediaService
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileReportDraftStore ReportDraftStore
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService MobileOutboxService
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileLookupCatalogProvider LookupCatalogProvider
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore SelectedMediaStore
 
@@ -89,12 +90,6 @@ else
                                 disabled="@IsMediaOperationInProgress">
                             @MobileUiText.ReportDraftCaptureVideoButton
                         </button>
-                        <button type="button"
-                                class="btn btn-outline-primary"
-                                @onclick="AttachCurrentVideoAsync"
-                                disabled="@IsMediaOperationInProgress">
-                            @MobileUiText.ReportDraftAttachSelectedVideoButton
-                        </button>
                     </div>
                 </article>
 
@@ -123,7 +118,7 @@ else
 
             @if (IsMediaOperationInProgress)
             {
-                <p class="report-draft-result">@MobileUiText.ReportDraftMediaOperationLoadingText</p>
+                <p class="report-draft-result">@ProgressText</p>
             }
             else if (!string.IsNullOrWhiteSpace(ResultText))
             {
@@ -170,6 +165,16 @@ else
                     }
                 </div>
             }
+
+            <div class="report-draft-queue-shell">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        @onclick="QueueDraftAsync"
+                        disabled="@IsMediaOperationInProgress">
+                    @MobileUiText.ReportDraftQueueButton
+                </button>
+                <p class="report-draft-queue-note">@MobileUiText.ReportDraftQueueLocalOnlyNoteText</p>
+            </div>
         </section>
     </section>
 }
@@ -188,6 +193,8 @@ else
 
     private string ResultText { get; set; } = string.Empty;
 
+    private string ProgressText { get; set; } = string.Empty;
+
     private bool ResultIsWarning { get; set; }
 
     private bool IsMediaOperationInProgress { get; set; }
@@ -204,23 +211,48 @@ else
 
     private async Task PickAndAttachVideoAsync()
     {
-        await RunMediaAttachAsync(() => MobileMediaService.PickVideoAsync());
+        await RunMediaAttachAsync(
+            () => MobileMediaService.PickVideoAsync(),
+            MobileUiText.ReportDraftPickVideoProgressText);
     }
 
     private async Task CaptureAndAttachVideoAsync()
     {
-        await RunMediaAttachAsync(() => MobileMediaService.CaptureVideoAsync());
+        await RunMediaAttachAsync(
+            () => MobileMediaService.CaptureVideoAsync(),
+            MobileUiText.ReportDraftCaptureVideoProgressText);
     }
 
-    private async Task AttachCurrentVideoAsync()
+    private async Task QueueDraftAsync()
     {
-        await AttachCurrentSelectionAsync();
+        if (Draft is null)
+        {
+            return;
+        }
+
+        ResultText = string.Empty;
+        ResultIsWarning = false;
+
+        var queueResult = await MobileOutboxService.EnqueueReportDraftAsync(Draft);
+        if (!queueResult.Applied)
+        {
+            ResultText = queueResult.Message;
+            ResultIsWarning = true;
+            return;
+        }
+
+        var markResult = await ReportDraftStore.MarkDraftQueuedLocalAsync(Draft.DraftId);
+        Draft = markResult.Draft ?? await ReportDraftStore.GetDraftAsync(DraftId);
+        ResultText = markResult.Applied ? queueResult.Message : markResult.Message;
+        ResultIsWarning = !markResult.Applied;
     }
 
     private async Task RunMediaAttachAsync(
-        Func<Task<global::App.Mobile.Android.Media.MobileMediaOperationResult>> operation)
+        Func<Task<global::App.Mobile.Android.Media.MobileMediaOperationResult>> operation,
+        string progressText)
     {
         IsMediaOperationInProgress = true;
+        ProgressText = progressText;
         ResultText = string.Empty;
         ResultIsWarning = false;
 
@@ -239,6 +271,7 @@ else
         finally
         {
             IsMediaOperationInProgress = false;
+            ProgressText = string.Empty;
         }
     }
 
@@ -257,18 +290,10 @@ else
             return;
         }
 
-        var updatedDraft = await ReportDraftStore.AttachSelectedVideoAsync(Draft.DraftId, selectedMedia);
-        if (updatedDraft is null)
-        {
-            Draft = null;
-            ResultText = MobileUiText.ReportDraftAttachVideoFailureText;
-            ResultIsWarning = true;
-            return;
-        }
-
-        Draft = updatedDraft;
-        ResultText = MobileUiText.GetReportDraftAttachVideoSuccessText(selectedMedia.FileName);
-        ResultIsWarning = false;
+        var operationResult = await ReportDraftStore.AttachSelectedVideoAsync(Draft.DraftId, selectedMedia);
+        Draft = operationResult.Draft ?? await ReportDraftStore.GetDraftAsync(DraftId);
+        ResultText = operationResult.Message;
+        ResultIsWarning = !operationResult.Applied;
     }
 
     private IReadOnlyList<global::App.Mobile.Android.Reports.MobileReportDraftFieldValue> GetFieldsForSection(string sectionKey)

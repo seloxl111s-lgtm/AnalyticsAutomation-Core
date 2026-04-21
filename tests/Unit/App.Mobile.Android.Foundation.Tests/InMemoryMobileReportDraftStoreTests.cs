@@ -59,20 +59,86 @@ public sealed class InMemoryMobileReportDraftStoreTests
     }
 
     [Fact]
-    public async Task AttachSelectedVideoAsync_AddsVideoAttachmentMetadata()
+    public async Task AttachSelectedVideoAsync_AddsOneVideoAttachment()
     {
         var store = CreateStore();
         var draft = await store.CreateFpvDraftAsync();
-        var descriptor = CreateDescriptor();
 
-        var updatedDraft = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
+        var result = await store.AttachSelectedVideoAsync(draft.DraftId, CreateDescriptor());
 
-        Assert.NotNull(updatedDraft);
-        Assert.Equal(global::App.Mobile.Android.Reports.MobileReportDraftStatus.ReadyForAttachmentReview, updatedDraft!.Status);
-        Assert.Single(updatedDraft.Attachments);
-        Assert.Equal(global::App.Mobile.Android.Reports.MobileReportAttachmentKind.Video, updatedDraft.Attachments[0].Kind);
-        Assert.Equal(descriptor.FileName, updatedDraft.Attachments[0].FileName);
-        Assert.Equal(descriptor.CacheKey, updatedDraft.Attachments[0].SelectedMediaCacheKey);
+        Assert.True(result.Applied);
+        Assert.NotNull(result.Draft);
+        Assert.NotNull(result.Attachment);
+        Assert.Equal(global::App.Mobile.Android.Reports.MobileReportDraftStatus.ReadyForAttachmentReview, result.Draft!.Status);
+        Assert.Single(result.Draft.Attachments);
+        Assert.Equal(global::App.Mobile.Android.Reports.MobileReportAttachmentKind.Video, result.Draft.Attachments[0].Kind);
+    }
+
+    [Fact]
+    public async Task AttachSelectedVideoAsync_SameCacheKeyTwice_ReturnsAppliedFalseAndKeepsOneAttachment()
+    {
+        var store = CreateStore();
+        var draft = await store.CreateFpvDraftAsync();
+        var descriptor = CreateDescriptor(cacheKey: "duplicate-cache-key");
+
+        var firstResult = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
+        var secondResult = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
+
+        Assert.True(firstResult.Applied);
+        Assert.False(secondResult.Applied);
+        Assert.NotNull(secondResult.Draft);
+        Assert.Single(secondResult.Draft!.Attachments);
+    }
+
+    [Fact]
+    public async Task AttachSelectedVideoAsync_SameFileNameAndContentTypeTwice_ReturnsAppliedFalseAndKeepsOneAttachment()
+    {
+        var store = CreateStore();
+        var draft = await store.CreateFpvDraftAsync();
+
+        var firstResult = await store.AttachSelectedVideoAsync(
+            draft.DraftId,
+            CreateDescriptor(cacheKey: "cache-a", fileName: "same.mp4", contentType: "video/mp4"));
+        var secondResult = await store.AttachSelectedVideoAsync(
+            draft.DraftId,
+            CreateDescriptor(cacheKey: "cache-b", fileName: "SAME.mp4", contentType: " video/mp4 "));
+
+        Assert.True(firstResult.Applied);
+        Assert.False(secondResult.Applied);
+        Assert.NotNull(secondResult.Draft);
+        Assert.Single(secondResult.Draft!.Attachments);
+    }
+
+    [Fact]
+    public async Task AttachSelectedVideoAsync_DifferentVideo_Succeeds()
+    {
+        var store = CreateStore();
+        var draft = await store.CreateFpvDraftAsync();
+
+        var firstResult = await store.AttachSelectedVideoAsync(
+            draft.DraftId,
+            CreateDescriptor(cacheKey: "cache-a", fileName: "first.mp4"));
+        var secondResult = await store.AttachSelectedVideoAsync(
+            draft.DraftId,
+            CreateDescriptor(cacheKey: "cache-b", fileName: "second.mp4"));
+
+        Assert.True(firstResult.Applied);
+        Assert.True(secondResult.Applied);
+        Assert.NotNull(secondResult.Draft);
+        Assert.Equal(2, secondResult.Draft!.Attachments.Count);
+    }
+
+    [Fact]
+    public async Task MarkDraftQueuedLocalAsync_SetsStatusQueuedLocal()
+    {
+        var store = CreateStore();
+        var draft = await store.CreateFpvDraftAsync();
+
+        var result = await store.MarkDraftQueuedLocalAsync(draft.DraftId);
+
+        Assert.True(result.Applied);
+        Assert.NotNull(result.Draft);
+        Assert.Equal(global::App.Mobile.Android.Reports.MobileReportDraftStatus.QueuedLocal, result.Draft!.Status);
     }
 
     [Fact]
@@ -81,28 +147,12 @@ public sealed class InMemoryMobileReportDraftStoreTests
         var store = CreateStore();
         var draft = await store.CreateFpvDraftAsync();
 
-        var updatedDraft = await store.AttachSelectedVideoAsync(draft.DraftId, CreateDescriptor());
+        var result = await store.AttachSelectedVideoAsync(draft.DraftId, CreateDescriptor());
 
-        Assert.NotNull(updatedDraft);
-        Assert.DoesNotContain(updatedDraft!.Fields, field =>
+        Assert.True(result.Applied);
+        Assert.NotNull(result.Draft);
+        Assert.DoesNotContain(result.Draft!.Fields, field =>
             string.Equals(field.FieldKey, "businessObjectKey", StringComparison.OrdinalIgnoreCase));
-    }
-
-    [Fact]
-    public async Task AttachSelectedVideoAsync_RepeatedAttachOfSameSelectedVideoDoesNotCrash()
-    {
-        var store = CreateStore();
-        var draft = await store.CreateFpvDraftAsync();
-        var descriptor = CreateDescriptor();
-
-        var firstAttach = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
-        var secondAttach = await store.AttachSelectedVideoAsync(draft.DraftId, descriptor);
-
-        Assert.NotNull(firstAttach);
-        Assert.NotNull(secondAttach);
-        Assert.Equal(2, secondAttach!.Attachments.Count);
-        Assert.All(secondAttach.Attachments, attachment =>
-            Assert.Equal(global::App.Mobile.Android.Reports.MobileReportAttachmentKind.Video, attachment.Kind));
     }
 
     private static global::App.Mobile.Android.Services.Local.InMemoryMobileReportDraftStore CreateStore()
@@ -111,13 +161,16 @@ public sealed class InMemoryMobileReportDraftStoreTests
             new global::App.Mobile.Android.Services.Stubs.StubMobileReportLookupProvider());
     }
 
-    private static global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor CreateDescriptor()
+    private static global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor CreateDescriptor(
+        string cacheKey = "cache-video-001",
+        string fileName = "fpv-video.mp4",
+        string? contentType = "video/mp4")
     {
         return new global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor(
-            CacheKey: "cache-video-001",
+            CacheKey: cacheKey,
             Source: global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo,
-            FileName: "fpv-video.mp4",
-            ContentType: "video/mp4",
+            FileName: fileName,
+            ContentType: contentType,
             SelectedAtUtc: DateTimeOffset.UtcNow,
             HasLocalReadHandle: true);
     }

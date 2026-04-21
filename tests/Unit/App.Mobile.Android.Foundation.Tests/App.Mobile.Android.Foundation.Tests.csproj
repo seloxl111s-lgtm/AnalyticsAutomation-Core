@@ -29,6 +29,7 @@
     <Compile Include="..\..\..\src\App.Mobile.Android\Reports\MobileReportAttachment.cs" Link="LinkedProduction\Reports\MobileReportAttachment.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Reports\MobileReportDraftFieldValue.cs" Link="LinkedProduction\Reports\MobileReportDraftFieldValue.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Reports\MobileReportDraft.cs" Link="LinkedProduction\Reports\MobileReportDraft.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Reports\MobileReportDraftOperationResult.cs" Link="LinkedProduction\Reports\MobileReportDraftOperationResult.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Lookup\MobileLookupFieldKind.cs" Link="LinkedProduction\Lookup\MobileLookupFieldKind.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Lookup\MobileLookupSelectorMode.cs" Link="LinkedProduction\Lookup\MobileLookupSelectorMode.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Lookup\MobileLookupFieldDefinition.cs" Link="LinkedProduction\Lookup\MobileLookupFieldDefinition.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemStatus.cs" Link="LinkedProduction\Outbox\PendingSyncItemStatus.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItem.cs" Link="LinkedProduction\Outbox\PendingSyncItem.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemLocalMediaDraft.cs" Link="LinkedProduction\Outbox\PendingSyncItemLocalMediaDraft.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemLocalReportDraft.cs" Link="LinkedProduction\Outbox\PendingSyncItemLocalReportDraft.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncOperationResult.cs" Link="LinkedProduction\Outbox\PendingSyncOperationResult.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\FileMobileOutboxSnapshotStore.cs" Link="LinkedProduction\Services\Local\FileMobileOutboxSnapshotStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\InMemoryMobileReportDraftStore.cs" Link="LinkedProduction\Services\Local\InMemoryMobileReportDraftStore.cs" />

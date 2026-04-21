@@ -40,9 +40,22 @@ internal static class MobileUiText
         "Запрошенный локальный черновик отчета не найден в текущем in-memory store.";
     public const string ReportDraftAttachCurrentVideoButton = "Прикрепить текущее видео";
     public const string ReportDraftNoCurrentSelectedVideoText =
-        "Сначала выберите или запишите видео на экране «Загрузка», чтобы прикрепить его к локальному черновику.";
+        "Сначала выберите или запишите видео в разделе «Медиа-вложения отчета», чтобы прикрепить его к текущему локальному черновику.";
     public const string ReportDraftNoAttachmentsText =
-        "Локальных вложений пока нет. Текущее выбранное видео можно прикрепить как метаданные вложения без upload и без backend-сохранения.";
+        "Локальных вложений пока нет. Выберите или запишите видео в этом разделе, чтобы прикрепить его как метаданные вложения без upload и без backend-сохранения.";
+    public const string ReportDraftInvalidVideoSelectionText =
+        "Не удалось обработать текущее локальное видео. Повторите выбор или запись без backend-вызовов.";
+    public const string ReportDraftDuplicateAttachmentWarningText =
+        "Это видео уже прикреплено к текущему локальному черновику отчета. Дубликат локально заблокирован.";
+    public const string ReportDraftQueueButton = "Поставить отчет в локальную очередь";
+    public const string ReportDraftQueueLocalOnlyNoteText =
+        "Это локальная очередь черновика. Backend create-report и businessObjectKey пока не подключены.";
+    public const string ReportDraftQueueInvalidDraftText =
+        "Не удалось поместить отчет в локальную очередь: черновик не найден.";
+    public const string ReportDraftQueueRequiresVideoText =
+        "В этом прототипе локальная очередь черновика требует хотя бы одно видео-вложение.";
+    public const string ReportDraftAlreadyQueuedText =
+        "Этот локальный черновик уже находится в очереди устройства.";
     public const string ReportSectionBasicDataTitle = "Основные данные";
     public const string ReportSectionTargetAndResultTitle = "Цель и результат";
     public const string ReportSectionFrequenciesAndParametersTitle = "Частоты и параметры";
@@ -170,7 +183,7 @@ internal static class MobileUiText
     public const string QueueLoadingText = "Загружается локальная очередь...";
     public const string QueueEmptyTitle = "Очередь пока пуста";
     public const string QueueEmptyMessage =
-        "Добавьте элемент из раздела «Загрузка», чтобы проверить локальный foundation очереди.";
+        "Добавьте элемент из раздела «Полеты» или со служебного экрана «Загрузка», чтобы проверить локальный foundation очереди.";
     public const string QueueRetryButton = "Повторить (заглушка)";
     public const string QueueRemoveButton = "Удалить";
     public const string QueueRepairButton = "Восстановить локальный доступ к файлу";
@@ -179,11 +192,18 @@ internal static class MobileUiText
     public const string QueueCreatedAtLabel = "Создано";
     public const string QueueStatusLabel = "Статус";
     public const string QueueLastActionLabel = "Последнее действие";
+    public const string QueueItemTypeLabel = "Тип элемента";
+    public const string QueueItemTypeReportDraftText = "Черновик отчета";
     public const string QueueMediaSourceLabel = "Источник видео";
     public const string QueueMediaFileNameLabel = "Имя файла";
     public const string QueueMediaContentTypeLabel = "MIME-тип";
     public const string QueueMediaSelectedAtLabel = "Выбрано";
     public const string QueueMediaDraftStateLabel = "Состояние черновика";
+    public const string QueueReportDraftIdLabel = "ID черновика";
+    public const string QueueReportAttachmentCountLabel = "Количество вложений";
+    public const string QueueReportVideoAttachmentCountLabel = "Видео-вложения";
+    public const string QueueReportDraftLocalOnlyNoteText =
+        "Это локальная очередь черновика. Backend create-report и businessObjectKey пока не подключены.";
     public const string QueueMediaDraftLocalOnlyText =
         "Локальный media-черновик привязан к файлу только в текущем запуске.";
     public const string QueueMediaDraftRestoredMetadataOnlyText =
@@ -225,6 +245,10 @@ internal static class MobileUiText
         "Элемент очереди содержит только локальный медиа-черновик на устройстве без upload, sync и backend-действий. После перезапуска могут остаться только метаданные.";
     public const string PendingSyncMediaDraftEnqueuedLastAction =
         "Выбранное видео передано в локальный черновик очереди.";
+    public const string PendingSyncReportDraftSummary =
+        "Локальный черновик отчета помещен в очередь только на устройстве. Это не backend create-report, не sync и не upload.";
+    public const string PendingSyncReportDraftEnqueuedLastAction =
+        "Локальный черновик отчета добавлен в очередь устройства.";
     public const string PendingSyncRestoredMetadataLastActionText =
         "После перезапуска восстановлены только локальные метаданные черновика. Реальный доступ к файлу нужно привязать повторно позже.";
 
@@ -240,8 +264,12 @@ internal static class MobileUiText
     public const string ReportDraftPickVideoButton = "Выбрать видео";
     public const string ReportDraftCaptureVideoButton = "Записать видео";
     public const string ReportDraftAttachSelectedVideoButton = "Прикрепить уже выбранное локальное видео";
+    public const string ReportDraftPickVideoProgressText =
+        "Открывается выбор видео для текущего черновика отчета.";
+    public const string ReportDraftCaptureVideoProgressText =
+        "Запускается запись видео для текущего черновика отчета.";
     public const string ReportDraftAttachVideoFailureText =
-        "Не удалось прикрепить видео к локальному черновику отчета. Проверьте локальный выбор и повторите действие без backend-вызовов.";
+        "Не удалось автоматически прикрепить видео к локальному черновику отчета. Проверьте локальный выбор и повторите действие без backend-вызовов.";
     public const string ReportDraftMediaOperationLoadingText =
         "Локальная media-операция выполняется. После завершения результат будет прикреплен к текущему черновику как метаданные.";
     public const string ReportDraftVideoBlockTitle = "Видео";
@@ -340,6 +368,11 @@ internal static class MobileUiText
         return $"Локальный медиа-черновик: {fileName}";
     }
 
+    public static string GetPendingSyncReportDraftTitle(string draftTitle)
+    {
+        return $"Локальный черновик отчета: {draftTitle}";
+    }
+
     public static string GetPendingSyncEnqueueResultText(string title)
     {
         return $"Элемент «{title}» добавлен в локальную очередь как заглушка.";
@@ -381,6 +414,7 @@ internal static class MobileUiText
         {
             global::App.Mobile.Android.Reports.MobileReportDraftStatus.Draft => "Черновик",
             global::App.Mobile.Android.Reports.MobileReportDraftStatus.ReadyForAttachmentReview => "Готов к просмотру вложений",
+            global::App.Mobile.Android.Reports.MobileReportDraftStatus.QueuedLocal => "В локальной очереди",
             _ => "Неизвестно"
         };
     }
@@ -410,6 +444,11 @@ internal static class MobileUiText
 
     public static string GetReportDraftAttachVideoSuccessText(string fileName)
     {
-        return $"Видео «{fileName}» прикреплено к локальному черновику как метаданные вложения.";
+        return $"Видео «{fileName}» автоматически прикреплено к локальному черновику как метаданные вложения.";
+    }
+
+    public static string GetReportDraftQueuedLocalText(string title)
+    {
+        return $"Отчет «{title}» помещен в локальную очередь черновиков.";
     }
 }

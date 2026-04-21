@@ -25,6 +25,7 @@ Report-first baseline means:
 - media selection/capture inside report draft
 - duplicate-safe attachment behavior inside draft
 - local report draft queue action
+- Queue rendering for local report draft pending items
 - no backend save
 - no sync
 - no upload
@@ -40,6 +41,7 @@ Report-first baseline means:
 - Backend integration remains blocked pending that concrete backend source/endpoint/contract.
 - Local report draft state is not backend-recognized binding.
 - Local report draft id is not `businessObjectKey`.
+- Local queue action is not backend report save.
 
 ## Gap matrix
 | Capability | Exists in canonical main | Current slice changes | Later slice needed | Notes |

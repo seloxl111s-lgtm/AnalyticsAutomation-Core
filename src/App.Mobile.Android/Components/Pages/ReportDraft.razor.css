@@ -160,6 +160,22 @@
     gap: 0.85rem;
 }
 
+.report-draft-queue-shell {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1rem;
+    padding: 0.95rem;
+    border: 1px solid #dbe3f0;
+    border-radius: 0.85rem;
+    background: #eef6ff;
+}
+
+.report-draft-queue-note {
+    margin: 0;
+    color: #1d4f91;
+    line-height: 1.45;
+}
+
 .report-draft-attachment-card {
     padding: 0.9rem;
     border: 1px solid #d7dee9;
@@ -173,6 +189,10 @@
     }
 
     .report-draft-attachment-actions .btn {
+        width: 100%;
+    }
+
+    .report-draft-queue-shell .btn {
         width: 100%;
     }
 }
