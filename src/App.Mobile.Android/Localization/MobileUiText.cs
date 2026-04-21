@@ -14,7 +14,7 @@ internal static class MobileUiText
     public const string HomeIntro = "Текущая Android-оболочка работает локально и показывает только базовую мобильную навигацию без backend-интеграции.";
 
     public const string UploadTitle = "Загрузка";
-    public const string UploadIntro = "На этом срезе доступны только локальный выбор и запись видео на устройстве. Файлы не копируются, не сохраняются отдельно и не отправляются в backend.";
+    public const string UploadIntro = "На этом срезе доступны локальный выбор/запись видео на устройстве и локальная очередь-заглушка. Файлы не копируются, не сохраняются отдельно и не отправляются в backend.";
     public const string UploadCapabilityCardTitle = "Локальные media-возможности устройства";
     public const string UploadCapabilityCardSummary = "Текущий Android baseline открывает системный выбор видео и запись видео на устройстве, если камера поддерживается. Это только local device media без upload и sync.";
     public const string UploadLocalDeviceBadge = "Только на устройстве";
@@ -44,12 +44,29 @@ internal static class MobileUiText
     public const string UploadClearSelectionButton = "Очистить локальный выбор";
     public const string UploadClearSelectionResultText = "Локальный выбранный медиафайл очищен.";
     public const string UploadUnknownContentTypeText = "Неизвестно";
+    public const string UploadEnqueueStubButton = "Добавить в локальную очередь (заглушка)";
+    public const string UploadOutboxActionHint = "Локальный outbox foundation добавляет только in-memory элемент-заглушку без upload, sync и backend-действий.";
 
     public const string QueueTitle = "Очередь";
-    public const string QueueIntro = "Это локальный экран-заглушка для будущей очереди. На этом срезе нет offline queue, sync и бизнес-действий.";
+    public const string QueueIntro = "Это локальный экран-заглушка для будущей очереди. На этом срезе нет upload, sync и бизнес-действий.";
+    public const string QueueFoundationCardTitle = "Локальная карточка очереди";
+    public const string QueueFoundationCardSummary = "Текущий outbox foundation хранит только локальные in-memory элементы-заглушки без upload, sync и постоянного хранения.";
+    public const string QueueLoadingText = "Загружается локальная очередь...";
+    public const string QueueEmptyTitle = "Очередь пока пуста";
+    public const string QueueEmptyMessage = "Добавьте элемент из раздела «Загрузка», чтобы проверить локальный foundation очереди.";
+    public const string QueueRetryButton = "Повторить (заглушка)";
+    public const string QueueRemoveButton = "Удалить";
+    public const string QueueCreatedAtLabel = "Создано";
+    public const string QueueStatusLabel = "Статус";
+    public const string QueueLastActionLabel = "Последнее действие";
 
     public const string NotFoundTitle = "Страница не найдена";
     public const string NotFoundMessage = "Запрошенный экран не найден в текущей локальной оболочке.";
+
+    public const string PendingSyncItemSummary = "Элемент создан только для локальной проверки очереди без отправки, синхронизации и постоянного хранения.";
+    public const string PendingSyncEnqueuedLastAction = "Элемент добавлен в локальную очередь как заглушка.";
+    public const string PendingSyncRetriedLastAction = "Выполнен локальный повтор без отправки.";
+    public const string PendingSyncItemNotFoundText = "Элемент локальной очереди не найден.";
 
     public static string GetShellModeText(global::App.Mobile.Android.State.MobileShellMode mode)
     {
@@ -88,6 +105,37 @@ internal static class MobileUiText
             global::App.Mobile.Android.Media.MobileMediaSource.CameraCapture => "Камера",
             _ => "Неизвестно"
         };
+    }
+
+    public static string GetPendingSyncStatusText(global::App.Mobile.Android.Outbox.PendingSyncItemStatus status)
+    {
+        return status switch
+        {
+            global::App.Mobile.Android.Outbox.PendingSyncItemStatus.Unknown => "Неизвестно",
+            global::App.Mobile.Android.Outbox.PendingSyncItemStatus.Queued => "В локальной очереди",
+            global::App.Mobile.Android.Outbox.PendingSyncItemStatus.RetryRequested => "Локальный повтор запрошен",
+            _ => "Неизвестно"
+        };
+    }
+
+    public static string GetPendingSyncItemTitle(int sequence)
+    {
+        return $"Локальный элемент очереди #{sequence}";
+    }
+
+    public static string GetPendingSyncEnqueueResultText(string title)
+    {
+        return $"Элемент «{title}» добавлен в локальную очередь как заглушка.";
+    }
+
+    public static string GetPendingSyncRetryResultText(string title)
+    {
+        return $"Для элемента «{title}» выполнен локальный повтор без отправки.";
+    }
+
+    public static string GetPendingSyncRemoveResultText(string title)
+    {
+        return $"Элемент «{title}» удалён из локальной очереди.";
     }
 
     public static string GetUploadNativePickerSuccessText(string fileName)

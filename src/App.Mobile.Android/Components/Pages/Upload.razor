@@ -1,8 +1,10 @@
 @page "/upload"
 @using global::App.Mobile.Android.Localization
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
+@inject global::App.Mobile.Android.Services.Abstractions.IFeatureFlagReader FeatureFlagReader
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileMediaService MobileMediaService
 @inject global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore SelectedMediaStore
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService MobileOutboxService
 
 <h1>@MobileUiText.UploadTitle</h1>
 <p>@MobileUiText.UploadIntro</p>
@@ -75,12 +77,30 @@
     </section>
 }
 
+@if (ShowQueueFoundationAction)
+{
+    <section class="outbox-foundation-block">
+        <p class="outbox-foundation-hint">@MobileUiText.UploadOutboxActionHint</p>
+        <button type="button" class="btn btn-outline-primary" @onclick="EnqueueStubItemAsync">@MobileUiText.UploadEnqueueStubButton</button>
+
+        @if (!string.IsNullOrWhiteSpace(OutboxResultText))
+        {
+            <p class="outbox-result">@OutboxResultText</p>
+        }
+    </section>
+}
+
 @code {
     private global::App.Mobile.Android.Media.MobileMediaCapabilitySnapshot? CapabilitySnapshot { get; set; }
 
     private global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor? CurrentSelectedMedia { get; set; }
 
     private string MediaResultText { get; set; } = string.Empty;
+
+    private string OutboxResultText { get; set; } = string.Empty;
+
+    private bool ShowQueueFoundationAction =>
+        FeatureFlagReader.IsEnabled(global::App.Mobile.Android.Services.Stubs.StubFeatureFlagReader.QueueFoundationCardFlag);
 
     private string CapabilitySummaryText =>
         CapabilitySnapshot?.SummaryText
@@ -112,6 +132,12 @@
         await SelectedMediaStore.ClearAsync();
         MediaResultText = MobileUiText.UploadClearSelectionResultText;
         await RefreshCurrentSelectedMediaAsync();
+    }
+
+    private async Task EnqueueStubItemAsync()
+    {
+        var result = await MobileOutboxService.EnqueueStubItemAsync();
+        OutboxResultText = result.Message;
     }
 
     private async Task RefreshCurrentSelectedMediaAsync()
