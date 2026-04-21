@@ -1,7 +1,8 @@
 namespace App.Mobile.Android.Services.Stubs;
 
 internal sealed class StubMobileOutboxService :
-    global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService
+    global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService,
+    IDisposable
 {
     private static readonly Action<global::Microsoft.Extensions.Logging.ILogger, string, Exception?> LogMediaDraftEnqueued =
         global::Microsoft.Extensions.Logging.LoggerMessage.Define<string>(
@@ -28,27 +29,33 @@ internal sealed class StubMobileOutboxService :
             "Removed local pending sync stub item {ItemId}");
 
     private readonly object _gate = new();
+    private readonly SemaphoreSlim _snapshotLoadGate = new(1, 1);
     private readonly List<global::App.Mobile.Android.Outbox.PendingSyncItem> _items = [];
     private readonly Dictionary<string, Func<Task<global::System.IO.Stream>>> _itemReadFactories = [];
     private readonly global::Microsoft.Extensions.Logging.ILogger<StubMobileOutboxService> _logger;
     private readonly global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService _duplicatePrecheckService;
     private readonly global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore _selectedMediaStore;
+    private readonly global::App.Mobile.Android.Services.Abstractions.IMobileOutboxSnapshotStore _snapshotStore;
+    private bool _snapshotLoaded;
     private int _sequence;
 
     public StubMobileOutboxService(
         global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService duplicatePrecheckService,
         global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore selectedMediaStore,
+        global::App.Mobile.Android.Services.Abstractions.IMobileOutboxSnapshotStore snapshotStore,
         global::Microsoft.Extensions.Logging.ILogger<StubMobileOutboxService> logger)
     {
         _duplicatePrecheckService = duplicatePrecheckService;
         _selectedMediaStore = selectedMediaStore;
+        _snapshotStore = snapshotStore;
         _logger = logger;
     }
 
-    public Task<IReadOnlyList<global::App.Mobile.Android.Outbox.PendingSyncItem>> GetItemsAsync(
+    public async Task<IReadOnlyList<global::App.Mobile.Android.Outbox.PendingSyncItem>> GetItemsAsync(
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        await EnsureSnapshotLoadedAsync(cancellationToken);
 
         lock (_gate)
         {
@@ -57,7 +64,7 @@ internal sealed class StubMobileOutboxService :
                 .. _items.OrderByDescending(item => item.CreatedAtUtc)
             ];
 
-            return Task.FromResult(items);
+            return items;
         }
     }
 
@@ -65,6 +72,7 @@ internal sealed class StubMobileOutboxService :
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        await EnsureSnapshotLoadedAsync(cancellationToken);
 
         var currentSelection = await _selectedMediaStore.GetCurrentAsync(cancellationToken);
         var precheckResult = _duplicatePrecheckService.CheckAgainstOutbox(currentSelection, GetItemsSnapshot());
@@ -81,7 +89,9 @@ internal sealed class StubMobileOutboxService :
         {
             return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
                 Applied: false,
-                Message: global::App.Mobile.Android.Localization.MobileUiText.PendingSyncNoCurrentSelectionText,
+                Message: currentSelection is null
+                    ? global::App.Mobile.Android.Localization.MobileUiText.PendingSyncNoCurrentSelectionText
+                    : global::App.Mobile.Android.Localization.MobileUiText.PendingSyncReselectAfterRestartText,
                 Item: null);
         }
 
@@ -111,6 +121,8 @@ internal sealed class StubMobileOutboxService :
             _itemReadFactories[item.ItemId] = currentSelectionEntry.OpenReadAsync;
         }
 
+        await SaveSnapshotAsync(cancellationToken);
+
         LogMediaDraftEnqueued(_logger, item.ItemId, null);
 
         return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
@@ -123,7 +135,14 @@ internal sealed class StubMobileOutboxService :
     public Task<global::App.Mobile.Android.Outbox.PendingSyncOperationResult> EnqueueStubItemAsync(
         CancellationToken cancellationToken = default)
     {
+        return EnqueueStubItemCoreAsync(cancellationToken);
+    }
+
+    private async Task<global::App.Mobile.Android.Outbox.PendingSyncOperationResult> EnqueueStubItemCoreAsync(
+        CancellationToken cancellationToken)
+    {
         cancellationToken.ThrowIfCancellationRequested();
+        await EnsureSnapshotLoadedAsync(cancellationToken);
 
         global::App.Mobile.Android.Outbox.PendingSyncItem item;
 
@@ -143,20 +162,22 @@ internal sealed class StubMobileOutboxService :
             _items.Insert(0, item);
         }
 
+        await SaveSnapshotAsync(cancellationToken);
+
         LogEnqueued(_logger, item.ItemId, null);
 
-        return Task.FromResult(
-            new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
-                Applied: true,
-                Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncEnqueueResultText(item.Title),
-                Item: item));
+        return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
+            Applied: true,
+            Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncEnqueueResultText(item.Title),
+            Item: item);
     }
 
-    public Task<global::App.Mobile.Android.Outbox.PendingSyncOperationResult> RetryAsync(
+    public async Task<global::App.Mobile.Android.Outbox.PendingSyncOperationResult> RetryAsync(
         string itemId,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        await EnsureSnapshotLoadedAsync(cancellationToken);
 
         global::App.Mobile.Android.Outbox.PendingSyncItem? updatedItem = null;
 
@@ -165,11 +186,10 @@ internal sealed class StubMobileOutboxService :
             var index = _items.FindIndex(item => item.ItemId == itemId);
             if (index < 0)
             {
-                return Task.FromResult(
-                    new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
-                        Applied: false,
-                        Message: global::App.Mobile.Android.Localization.MobileUiText.PendingSyncItemNotFoundText,
-                        Item: null));
+                return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
+                    Applied: false,
+                    Message: global::App.Mobile.Android.Localization.MobileUiText.PendingSyncItemNotFoundText,
+                    Item: null);
             }
 
             updatedItem = _items[index] with
@@ -181,20 +201,22 @@ internal sealed class StubMobileOutboxService :
             _items[index] = updatedItem;
         }
 
+        await SaveSnapshotAsync(cancellationToken);
+
         LogRetried(_logger, updatedItem!.ItemId, null);
 
-        return Task.FromResult(
-            new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
-                Applied: true,
-                Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncRetryResultText(updatedItem.Title),
-                Item: updatedItem));
+        return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
+            Applied: true,
+            Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncRetryResultText(updatedItem.Title),
+            Item: updatedItem);
     }
 
-    public Task<global::App.Mobile.Android.Outbox.PendingSyncOperationResult> RemoveAsync(
+    public async Task<global::App.Mobile.Android.Outbox.PendingSyncOperationResult> RemoveAsync(
         string itemId,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        await EnsureSnapshotLoadedAsync(cancellationToken);
 
         global::App.Mobile.Android.Outbox.PendingSyncItem? removedItem = null;
 
@@ -203,11 +225,10 @@ internal sealed class StubMobileOutboxService :
             var index = _items.FindIndex(item => item.ItemId == itemId);
             if (index < 0)
             {
-                return Task.FromResult(
-                    new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
-                        Applied: false,
-                        Message: global::App.Mobile.Android.Localization.MobileUiText.PendingSyncItemNotFoundText,
-                        Item: null));
+                return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
+                    Applied: false,
+                    Message: global::App.Mobile.Android.Localization.MobileUiText.PendingSyncItemNotFoundText,
+                    Item: null);
             }
 
             removedItem = _items[index];
@@ -215,13 +236,14 @@ internal sealed class StubMobileOutboxService :
             _itemReadFactories.Remove(removedItem.ItemId);
         }
 
+        await SaveSnapshotAsync(cancellationToken);
+
         LogRemoved(_logger, removedItem!.ItemId, null);
 
-        return Task.FromResult(
-            new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
-                Applied: true,
+        return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
+            Applied: true,
             Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncRemoveResultText(removedItem.Title),
-            Item: removedItem));
+            Item: removedItem);
     }
 
     private IReadOnlyList<global::App.Mobile.Android.Outbox.PendingSyncItem> GetItemsSnapshot()
@@ -233,5 +255,85 @@ internal sealed class StubMobileOutboxService :
                 .. _items
             ];
         }
+    }
+
+    private async Task EnsureSnapshotLoadedAsync(CancellationToken cancellationToken)
+    {
+        if (_snapshotLoaded)
+        {
+            return;
+        }
+
+        await _snapshotLoadGate.WaitAsync(cancellationToken);
+        try
+        {
+            if (_snapshotLoaded)
+            {
+                return;
+            }
+
+            var persistedItems = await _snapshotStore.LoadAsync(cancellationToken);
+            var normalizedItems = persistedItems
+                .Select(NormalizeRestoredItem)
+                .ToList();
+
+            lock (_gate)
+            {
+                _items.Clear();
+                _items.AddRange(normalizedItems);
+                _itemReadFactories.Clear();
+                _sequence = _items
+                    .Select(item => TryParseSequence(item.ItemId))
+                    .DefaultIfEmpty(0)
+                    .Max();
+                _snapshotLoaded = true;
+            }
+        }
+        finally
+        {
+            _snapshotLoadGate.Release();
+        }
+    }
+
+    private async Task SaveSnapshotAsync(CancellationToken cancellationToken)
+    {
+        await _snapshotStore.SaveAsync(GetItemsSnapshot(), cancellationToken);
+    }
+
+    private static global::App.Mobile.Android.Outbox.PendingSyncItem NormalizeRestoredItem(
+        global::App.Mobile.Android.Outbox.PendingSyncItem item)
+    {
+        if (item.LocalMediaDraft is null)
+        {
+            return item;
+        }
+
+        return item with
+        {
+            LocalMediaDraft = item.LocalMediaDraft with
+            {
+                HasLocalReadHandle = false
+            },
+            LastActionText = global::App.Mobile.Android.Localization.MobileUiText.PendingSyncRestoredMetadataLastActionText
+        };
+    }
+
+    private static int TryParseSequence(string itemId)
+    {
+        var suffixIndex = itemId.LastIndexOf('-');
+        if (suffixIndex < 0 || suffixIndex == itemId.Length - 1)
+        {
+            return 0;
+        }
+
+        return int.TryParse(itemId[(suffixIndex + 1)..], out var sequence)
+            ? sequence
+            : 0;
+    }
+
+    public void Dispose()
+    {
+        _snapshotLoadGate.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

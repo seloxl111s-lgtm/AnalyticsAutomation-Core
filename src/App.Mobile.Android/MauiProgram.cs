@@ -36,11 +36,19 @@ public static class MauiProgram
             global::App.Mobile.Android.Services.Abstractions.IMobileMediaService,
             global::App.Mobile.Android.Services.Android.AndroidNativeMediaService>();
         builder.Services.AddSingleton<
+            global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaSnapshotStore>(
+            _ => new global::App.Mobile.Android.Services.Local.FileMobileSelectedMediaSnapshotStore(
+                global::Microsoft.Maui.Storage.FileSystem.AppDataDirectory));
+        builder.Services.AddSingleton<
             global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore,
             global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore>();
         builder.Services.AddSingleton<
             global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService,
             global::App.Mobile.Android.Services.Local.LocalOutboxDuplicatePrecheckService>();
+        builder.Services.AddSingleton<
+            global::App.Mobile.Android.Services.Abstractions.IMobileOutboxSnapshotStore>(
+            _ => new global::App.Mobile.Android.Services.Local.FileMobileOutboxSnapshotStore(
+                global::Microsoft.Maui.Storage.FileSystem.AppDataDirectory));
         builder.Services.AddSingleton<
             global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService,
             global::App.Mobile.Android.Services.Stubs.StubMobileOutboxService>();

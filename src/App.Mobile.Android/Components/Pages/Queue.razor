@@ -59,9 +59,14 @@
                                     </div>
                                     <div>
                                         <dt>@MobileUiText.QueueMediaDraftStateLabel</dt>
-                                        <dd>@MobileUiText.QueueMediaDraftLocalOnlyText</dd>
+                                        <dd>@MobileUiText.GetQueueMediaDraftStateText(item.LocalMediaDraft.HasLocalReadHandle)</dd>
                                     </div>
                                 </dl>
+
+                                @if (!item.LocalMediaDraft.HasLocalReadHandle)
+                                {
+                                    <p class="queue-restored-note">@MobileUiText.QueueRestoredMetadataOnlyNoteText</p>
+                                }
                             </section>
                         }
 

@@ -68,9 +68,14 @@
             </div>
             <div>
                 <dt>@MobileUiText.UploadSelectedMediaStateLabel</dt>
-                <dd>@MobileUiText.UploadSelectedMediaStateText</dd>
+                <dd>@MobileUiText.GetUploadSelectedMediaStateText(CurrentSelectedMedia.HasLocalReadHandle)</dd>
             </div>
         </dl>
+
+        @if (!CurrentSelectedMedia.HasLocalReadHandle)
+        {
+            <p class="selected-media-note">@MobileUiText.UploadSelectedMediaRestoredMetadataNoteText</p>
+        }
 
         <div class="selected-media-actions">
             <button type="button" class="btn btn-outline-danger" @onclick="ClearSelectedMediaAsync">@MobileUiText.UploadClearSelectionButton</button>
