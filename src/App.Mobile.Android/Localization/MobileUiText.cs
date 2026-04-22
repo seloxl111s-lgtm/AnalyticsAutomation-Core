@@ -507,4 +507,60 @@ internal static class MobileUiText
     {
         return $"Отчет «{title}» помещен в локальную очередь черновиков.";
     }
+    public static string GetReportDraftValidationSummaryTitle()
+    {
+        return "Локальная проверка черновика";
+    }
+
+    public static string GetReportDraftValidationLocalOnlyNote()
+    {
+        return "Это только локальная mobile-проверка перед постановкой в очередь. Она не заменяет backend validation и не является финальным create-report контрактом.";
+    }
+
+    public static string GetReportDraftValidationReadySummaryText()
+    {
+        return "Черновик готов только к локальной очереди. Эта проверка не заменяет backend validation.";
+    }
+
+    public static string GetReportDraftValidationNotReadySummaryText()
+    {
+        return "Черновик пока не готов к локальной очереди. Эта проверка не заменяет backend validation.";
+    }
+
+    public static string GetReportDraftValidationMissingVideoAttachmentText()
+    {
+        return "Добавьте хотя бы одно видео-вложение, прежде чем ставить черновик в локальную очередь.";
+    }
+
+    public static string GetReportDraftValidationDraftNotFoundText()
+    {
+        return "Локальная проверка не может продолжиться: черновик отчета не найден.";
+    }
+
+    public static string GetReportDraftQueueBlockedByValidationText()
+    {
+        return "Локальная очередь заблокирована, пока черновик не пройдет локальную проверку.";
+    }
+
+    public static string GetReportDraftValidationPassedText()
+    {
+        return "Локальная проверка пройдена.";
+    }
+
+    public static string GetReportDraftRequiredFieldMissingText(string fieldLabel)
+    {
+        return $"Заполните обязательное поле «{fieldLabel}» перед постановкой черновика в локальную очередь.";
+    }
+
+    public static string GetReportDraftValidationIssueCountText(int issueCount)
+    {
+        return $"Проблем: {issueCount}";
+    }
+
+    public static string GetReportDraftValidationStatusText(bool isReadyForLocalQueue)
+    {
+        return isReadyForLocalQueue
+            ? "Готов к локальной очереди"
+            : "Не готов к локальной очереди";
+    }
 }

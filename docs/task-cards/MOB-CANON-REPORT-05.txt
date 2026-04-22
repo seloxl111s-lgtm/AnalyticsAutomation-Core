@@ -1,0 +1,39 @@
+Title: MOB-CANON-REPORT-05 — Local validation summary and ready-to-queue gating
+Coder: 3
+Module: App.Mobile.Android
+Task type: mobile UI capability / local report draft validation / local queue gating
+
+Goal:
+Add local validation summary for FPV report drafts and block local queue placement until the required local draft fields and at least one video attachment are present.
+
+What changes:
+mobile only
+
+New or changed contracts:
+shared DTO/contracts unchanged
+
+Migration:
+none
+
+Offline behavior:
+local in-memory validation only, no backend save, no sync, no upload
+
+Security:
+no auth/authz changes
+
+Observability:
+local validation messages and queue gating result text
+
+Rollback:
+revert this local validation slice
+
+Definition of done:
+- build succeeds
+- unit tests pass
+- validation summary renders in ReportDraft
+- missing required fields are shown in Russian
+- missing video attachment is shown in Russian
+- incomplete draft is blocked from local queue
+- completed draft can be placed into local queue
+- no backend integration
+- no App.UI.Shared changes
