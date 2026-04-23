@@ -1,3 +1,6 @@
+using App.Web.Features.Upload.ControlPlane;
+using App.Web.Features.Upload.SiteGateway;
+using App.Web.Features.Upload.Api;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -8,5 +11,10 @@ builder.RootComponents.Add<global::App.Web.App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+builder.Services.AddScoped<IVideoUploadApi, HttpVideoUploadApi>();
+builder.Services.AddScoped<IUploadControlPlaneApi, HttpUploadControlPlaneApi>();
+builder.Services.AddScoped<IUploadControlPlaneSessionStore, InMemoryUploadControlPlaneSessionStore>();
+builder.Services.AddScoped<IDirectSiteVideoUploadAdapter, LocalStubDirectSiteVideoUploadAdapter>();
 
 await builder.Build().RunAsync();

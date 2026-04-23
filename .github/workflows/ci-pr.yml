@@ -1,4 +1,4 @@
-name: ci
+﻿name: ci
 
 on:
   pull_request:
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -60,7 +60,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -94,7 +94,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -118,8 +118,16 @@ jobs:
         shell: pwsh
         run: |
           $projects = Get-ChildItem -Path 'tests/Unit' -Recurse -Filter *.csproj | Select-Object -ExpandProperty FullName
+          $failed = $false
           foreach ($project in $projects) {
+            Write-Host "Running unit test project: $project"
             dotnet test $project -nologo -v minimal
+            if ($LASTEXITCODE -ne 0) {
+              $failed = $true
+            }
+          }
+          if ($failed) {
+            throw "One or more unit test projects failed."
           }
 
       - name: No unit tests yet
@@ -135,7 +143,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -159,8 +167,16 @@ jobs:
         shell: pwsh
         run: |
           $projects = Get-ChildItem -Path 'tests/Integration' -Recurse -Filter *.csproj | Select-Object -ExpandProperty FullName
+          $failed = $false
           foreach ($project in $projects) {
+            Write-Host "Running integration test project: $project"
             dotnet test $project -nologo -v minimal
+            if ($LASTEXITCODE -ne 0) {
+              $failed = $true
+            }
+          }
+          if ($failed) {
+            throw "One or more integration test projects failed."
           }
 
       - name: No integration tests yet
@@ -176,7 +192,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
