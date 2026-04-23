@@ -1,0 +1,19 @@
+.shared-empty-state {
+    margin-top: 1rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 1rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    color: #0f172a;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.shared-empty-state h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.05rem;
+}
+
+.shared-empty-state p {
+    margin: 0;
+    line-height: 1.5;
+}

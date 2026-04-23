@@ -1,0 +1,12 @@
+<section class="shared-empty-state">
+    <h2>@Title</h2>
+    <p>@Message</p>
+</section>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+}

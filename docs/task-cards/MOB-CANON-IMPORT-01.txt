@@ -1,0 +1,40 @@
+Title: MOB-CANON-IMPORT-01 — Shell/navigation/RU baseline reconciliation
+Coder: 3
+Module: App.Mobile.Android / App.UI.Shared narrow placeholders / mobile tests
+Task type: repository reconciliation / UI capability / test coverage
+
+Goal
+- Restore the first safe mobile foundation slice into the canonical repository by reconciling shell, navigation, Russian-first visible baseline, local shell-state stubs, narrow shared placeholders, and minimal unit tests without importing media, outbox, or backend code.
+
+What changes
+- mobile shell/navigation/menu baseline
+- Russian-first visible mobile baseline
+- local shell state/access/feature flag stubs
+- narrow App.UI.Shared placeholders
+- minimal mobile foundation unit tests
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- local placeholder shell modes only, no business actions
+
+Security
+- no auth/authz integration
+
+Observability
+- shell banner and handoff report
+
+Rollback
+- revert this import slice
+
+Definition of done
+- mobile build succeeds
+- unit tests pass
+- Home/Upload/Queue routes exist
+- menu renders as always-visible mobile menu
+- Russian visible baseline present
+- no backend integration

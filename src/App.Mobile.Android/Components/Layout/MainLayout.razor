@@ -1,17 +1,27 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@using global::App.Mobile.Android.Localization
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileAccessContext AccessContext
 
-<div class="page">
-    <div class="sidebar">
+<div class="layout-shell">
+    <aside class="shell-sidebar">
         <NavMenu />
-    </div>
+    </aside>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <main class="shell-main">
+        @if (!string.IsNullOrWhiteSpace(BannerText))
+        {
+            <div class="shell-banner" role="status">
+                <span class="shell-banner-label">@MobileUiText.ShellBannerLabel</span>
+                <span>@BannerText</span>
+            </div>
+        }
 
-        <article class="content px-4">
+        <section class="shell-content">
             @Body
-        </article>
+        </section>
     </main>
 </div>
+
+@code {
+    private string BannerText => AccessContext.GetBannerText();
+}

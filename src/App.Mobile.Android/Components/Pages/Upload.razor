@@ -1,16 +1,16 @@
-@page "/"
+@page "/upload"
 @using global::App.Mobile.Android.Localization
 @using global::App.UI.Shared.Pages
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
 
-<h1>@MobileUiText.HomeTitle</h1>
-<p>@MobileUiText.HomeIntro</p>
+<h1>@MobileUiText.UploadTitle</h1>
+<p>@MobileUiText.UploadIntro</p>
 
-<HomePlaceholder />
+<UploadPlaceholder />
 
 @code {
     protected override void OnInitialized()
     {
-        NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Home);
+        NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Upload);
     }
 }

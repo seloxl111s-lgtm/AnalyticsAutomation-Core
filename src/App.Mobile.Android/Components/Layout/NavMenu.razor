@@ -1,27 +1,22 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">App.Mobile.Android</a>
+@using global::App.Mobile.Android.Localization
+@inject global::App.Mobile.Android.Navigation.MobileViewRegistry ViewRegistry
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileAccessContext AccessContext
+
+<div class="nav-shell">
+    <div class="nav-header">
+        <div class="nav-title">@MobileUiText.ApplicationTitle</div>
+        <div class="nav-subtitle">@MobileUiText.NavigationSubtitle</div>
     </div>
-</div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+    <nav class="menu-list">
+        @foreach (var entry in ViewRegistry.GetVisibleMenuEntries(AccessContext))
+        {
+            <NavLink class="nav-link"
+                     href="@entry.Route"
+                     Match="@(entry.ViewId == global::App.Mobile.Android.Navigation.MobileViewId.Home ? NavLinkMatch.All : NavLinkMatch.Prefix)">
+                <span class="@entry.IconCssClass" aria-hidden="true"></span>
+                <span>@entry.Title</span>
             </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
+        }
     </nav>
 </div>

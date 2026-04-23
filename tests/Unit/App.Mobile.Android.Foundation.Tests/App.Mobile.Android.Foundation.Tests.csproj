@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.6" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\src\App.Mobile.Android\Localization\MobileUiText.cs" Link="LinkedProduction\Localization\MobileUiText.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\State\MobileShellMode.cs" Link="LinkedProduction\State\MobileShellMode.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Options\MobileShellOptions.cs" Link="LinkedProduction\Options\MobileShellOptions.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Options\MobileShellOptionsValidator.cs" Link="LinkedProduction\Options\MobileShellOptionsValidator.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Navigation\MobileViewId.cs" Link="LinkedProduction\Navigation\MobileViewId.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Navigation\MobileMenuEntry.cs" Link="LinkedProduction\Navigation\MobileMenuEntry.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Navigation\MobileViewRegistry.cs" Link="LinkedProduction\Navigation\MobileViewRegistry.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Navigation\MobileNavigationState.cs" Link="LinkedProduction\Navigation\MobileNavigationState.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IFeatureFlagReader.cs" Link="LinkedProduction\Services\Abstractions\IFeatureFlagReader.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileAccessContext.cs" Link="LinkedProduction\Services\Abstractions\IMobileAccessContext.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Stubs\StubFeatureFlagReader.cs" Link="LinkedProduction\Services\Stubs\StubFeatureFlagReader.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Stubs\StubMobileAccessContext.cs" Link="LinkedProduction\Services\Stubs\StubMobileAccessContext.cs" />
+  </ItemGroup>
+</Project>

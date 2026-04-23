@@ -1,16 +1,16 @@
-@page "/"
+@page "/queue"
 @using global::App.Mobile.Android.Localization
 @using global::App.UI.Shared.Pages
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
 
-<h1>@MobileUiText.HomeTitle</h1>
-<p>@MobileUiText.HomeIntro</p>
+<h1>@MobileUiText.QueueTitle</h1>
+<p>@MobileUiText.QueueIntro</p>
 
-<HomePlaceholder />
+<QueuePlaceholder />
 
 @code {
     protected override void OnInitialized()
     {
-        NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Home);
+        NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Queue);
     }
 }
