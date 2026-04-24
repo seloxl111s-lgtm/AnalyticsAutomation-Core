@@ -56,12 +56,19 @@
 - `dotnet build .\src\App.Mobile.Android\App.Mobile.Android.csproj -f net10.0-android -m:1`
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
+## Physical Android runtime check
+- Result: passed.
+- Runtime status: import03 phone ok.
+- Upload route still opens.
+- Media picker from IMPORT-02 still works.
+- Upload local enqueue stub action works.
+- Queue route opens.
+- Queue renders local PendingSyncItem.
+- Retry stub action works.
+- Remove action works.
+
 ## Manual steps pending
-- Physical Android runtime check for Upload enqueue action and Queue retry/remove behavior.
-- Confirm Upload route can enqueue a local stub outbox item.
-- Confirm Queue route renders local outbox items.
-- Confirm retry local action updates local state.
-- Confirm remove local action removes the local item.
+- none for IMPORT-03.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
@@ -71,4 +78,5 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- Do not start MOB-CANON-IMPORT-04 until this PR-ready branch has phone-check evidence and owner approval.
+- After this PR merges: MOB-CANON-IMPORT-04 selected-media to outbox draft handoff PR slice.
+- Do not start MOB-CANON-IMPORT-04 in this branch.
