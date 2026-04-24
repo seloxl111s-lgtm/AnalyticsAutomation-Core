@@ -63,7 +63,7 @@ The current branch is only for validation of MOB-CANON-IMPORT-04:
 - run App.Mobile.Android foundation unit tests
 - run Android build
 - run whitespace format check
-- perform physical Android phone check for selected-media handoff from Upload to Queue
+- physical Android phone check passed for selected-media handoff from Upload to Queue
 
 Do not start MOB-CANON-IMPORT-05, backend/S1 integration, duplicate-precheck, restart snapshots, repair/rebind, report draft, or report UX in this branch.
 

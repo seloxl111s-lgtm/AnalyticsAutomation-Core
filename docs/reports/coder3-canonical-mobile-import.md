@@ -54,13 +54,17 @@
 - `dotnet build .\src\App.Mobile.Android\App.Mobile.Android.csproj -f net10.0-android -m:1`
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
+## Physical Android runtime check
+- Result: passed.
+- Runtime status: import04 phone ok.
+- Selected media can be transferred from Upload to Queue.
+- Selected local media card clears after successful handoff.
+- Queue renders media-linked item details.
+- No selected media warning works.
+- Retry/remove still work.
+
 ## Manual steps pending
-- Physical Android runtime check for selected-media handoff from Upload to Queue.
-- Confirm selected media can be transferred from Upload to Queue.
-- Confirm selected local media card clears after successful handoff.
-- Confirm Queue renders media-linked item details.
-- Confirm no selected media warning works.
-- Confirm retry/remove still work.
+- none for IMPORT-04.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
@@ -70,4 +74,5 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- Do not start MOB-CANON-IMPORT-05 until this PR-ready branch has phone-check evidence and owner approval.
+- After this PR merges: MOB-CANON-IMPORT-05 local duplicate-precheck PR slice.
+- Do not start MOB-CANON-IMPORT-05 in this branch.
