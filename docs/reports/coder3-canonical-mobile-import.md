@@ -50,12 +50,17 @@
 - `dotnet test .\tests\Unit\App.Mobile.Android.Foundation.Tests\App.Mobile.Android.Foundation.Tests.csproj -c Debug`
 - `dotnet build .\src\App.Mobile.Android\App.Mobile.Android.csproj -f net10.0-android -m:1`
 
+## Physical Android runtime check
+- Result: passed.
+- Runtime status: import02 phone ok.
+- Upload route opens.
+- Native video picker works.
+- Selected local media card appears.
+- Clear local selection works.
+- Camera capture opens or fails safely with Russian message.
+
 ## Manual steps pending
-- Physical Android runtime check for media picker/camera/selected-media cache on this fresh-main branch.
-- Confirm native video picker opens.
-- Confirm native camera capture opens or shows a safe device capability error.
-- Confirm selected local media card renders after pick/capture.
-- Confirm clear local selection action works.
+- none for IMPORT-02.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
@@ -65,4 +70,5 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- Do not start MOB-CANON-IMPORT-03 until this PR-ready branch has phone-check evidence and owner approval.
+- After this PR merges: MOB-CANON-IMPORT-03 local outbox foundation PR slice.
+- Do not start MOB-CANON-IMPORT-03 in this branch.
