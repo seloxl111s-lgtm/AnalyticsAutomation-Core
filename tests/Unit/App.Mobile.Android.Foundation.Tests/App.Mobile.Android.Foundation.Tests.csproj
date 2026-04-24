@@ -19,6 +19,9 @@
 
   <ItemGroup>
     <Compile Include="..\..\..\src\App.Mobile.Android\Localization\MobileUiText.cs" Link="LinkedProduction\Localization\MobileUiText.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Media\MobileMediaCapabilityState.cs" Link="LinkedProduction\Media\MobileMediaCapabilityState.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Media\MobileMediaSource.cs" Link="LinkedProduction\Media\MobileMediaSource.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Media\LocalSelectedMediaDescriptor.cs" Link="LinkedProduction\Media\LocalSelectedMediaDescriptor.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\State\MobileShellMode.cs" Link="LinkedProduction\State\MobileShellMode.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Options\MobileShellOptions.cs" Link="LinkedProduction\Options\MobileShellOptions.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Options\MobileShellOptionsValidator.cs" Link="LinkedProduction\Options\MobileShellOptionsValidator.cs" />
@@ -28,6 +31,8 @@
     <Compile Include="..\..\..\src\App.Mobile.Android\Navigation\MobileNavigationState.cs" Link="LinkedProduction\Navigation\MobileNavigationState.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IFeatureFlagReader.cs" Link="LinkedProduction\Services\Abstractions\IFeatureFlagReader.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileAccessContext.cs" Link="LinkedProduction\Services\Abstractions\IMobileAccessContext.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileSelectedMediaStore.cs" Link="LinkedProduction\Services\Abstractions\IMobileSelectedMediaStore.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\InMemoryMobileSelectedMediaStore.cs" Link="LinkedProduction\Services\Local\InMemoryMobileSelectedMediaStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Stubs\StubFeatureFlagReader.cs" Link="LinkedProduction\Services\Stubs\StubFeatureFlagReader.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Stubs\StubMobileAccessContext.cs" Link="LinkedProduction\Services\Stubs\StubMobileAccessContext.cs" />
   </ItemGroup>

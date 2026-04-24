@@ -1,79 +1,72 @@
 # Coder 3 Mobile Foundation Reconciliation
 
 ## Purpose
-Compare the canonical mobile project against the previously built mobile foundation without importing code blindly into the canonical repository.
+Track the controlled mobile foundation replay into the canonical repository without importing broad local-only work.
 
-## Canonical App.Mobile.Android current state
-The canonical repository started from a template-level MAUI Blazor Hybrid mobile baseline:
-- `App.Mobile.Android.csproj` targets `net10.0-android`
-- `App.Mobile.Android` already references `App.UI.Shared`
-- `MauiProgram.cs` was default MAUI + Blazor WebView setup before reconciliation
-- `MainLayout.razor`, `NavMenu.razor`, `Home.razor`, `Counter.razor`, `Weather.razor`, and `NotFound.razor` were still template content
-- the visible navigation was still the template `Home`, `Counter`, `Weather` menu
-- no local Android media picker/camera foundation was present
-- no selected-media cache, outbox, duplicate-precheck, restart-resilience, or repair/rebind seams were present
-- `App.UI.Shared` was also still template baseline
-- no mobile foundation unit test project was present in the canonical repo
+## Canonical state after PR #67
+The canonical repository contains the MOB-CANON-IMPORT-01 shell/navigation/RU baseline from PR #67:
+- `App.Mobile.Android.csproj` targets `net10.0-android`.
+- `App.Mobile.Android` references `App.UI.Shared` as already present in main.
+- Shell, navigation, Russian visible baseline, and local shell-state stubs are present.
+- PR #67 is merged into `main`.
 
-## Prior mobile foundation available for reuse
-Previous source path is available:
-- `C:\Users\yarad\source\repos\AndroidA_git_wrong_repo_backup_20260419_151951`
+## Current PR-ready slice
+`MOB-CANON-IMPORT-02` is replayed from fresh `main` at `cb0b960`.
 
-Observed reusable mobile foundation from that source:
-- native picker/camera foundation
-- selected-media cache
+This slice restores only:
+- Android native video picker.
+- Android native camera capture baseline.
+- Local selected-media descriptor/cache.
+- Upload media capability card.
+- Selected local media card.
+- Clear local selection action.
+- App.Mobile.Android foundation tests for the selected-media store.
+
+## Explicitly deferred
 - outbox foundation
+- selected-media to outbox handoff
 - duplicate-precheck
-- restart-resilience snapshot seam
-- repair/rebind seam
-- Russian UI baseline
-- local shell state/access/flag stubs
-- App.UI.Shared placeholder/shared baseline used by mobile
-- unit test project present under `tests/Unit/App.Mobile.Android.Foundation.Tests`
-- prior report trail indicates unit tests passed `48/48`
-- prior docs/task-cards/reports exist and can inform a controlled import plan
+- restart-resilience snapshots
+- repair/rebind
+- report draft shell
+- lookup/filter/report UX
+- backend S1 adapters
+- PreUploadCheck
+- UploadReceipt
+- direct upload runtime
+- shared DTO/contracts changes
+- App.UI.Shared changes
 
 ## Gap matrix
-| Capability | Exists in canonical | Exists in prior foundation | Import/reconcile needed | Risk | Notes |
-| --- | --- | --- | --- | --- | --- |
-| MAUI shell | yes | yes | no | low | canonical already had the base shell scaffold |
-| App.UI.Shared hookup | yes | yes | no | low | canonical already had the project reference |
-| Russian UI baseline | partial after MOB-CANON-IMPORT-01 | yes | more later | low | current active shell/menu/pages are Russian-first now |
-| mobile navigation/menu | yes after MOB-CANON-IMPORT-01 | yes | more later | low | template `Counter` and `Weather` no longer appear in active mobile menu |
-| shell state/access/flag stubs | yes after MOB-CANON-IMPORT-01 | yes | more later | low | current slice restored local shell mode/options/access/flag seams |
-| native video picker | no | yes | yes | medium | belongs to later import slice |
-| native camera capture | no | yes | yes | medium | belongs to later import slice |
-| selected media cache | no | yes | yes | medium | belongs to later import slice |
-| selected media to outbox handoff | no | yes | yes | medium | belongs to later import slice |
-| local duplicate-precheck | no | yes | yes | medium | belongs to later import slice |
-| snapshot/restart-resilience | no | yes | yes | medium | belongs to later import slice |
-| repair/rebind | no | yes | yes | medium | belongs to later import slice |
-| mobile foundation unit tests | yes after MOB-CANON-IMPORT-01 | yes | more later | low | canonical repo now has minimal shell/navigation/state tests |
-| docs/task-cards/reports | partial after MOB-CANON-IMPORT-01 | yes | yes | low | import trail is being restored slice by slice |
+| Capability | Exists in canonical main | Restored by IMPORT-02 branch | Later slice needed | Notes |
+| --- | --- | --- | --- | --- |
+| MAUI shell | yes | no | no | Present from PR #67 |
+| mobile navigation/menu | yes | no | no | Present from PR #67 |
+| Russian visible baseline | yes | no | later polish possible | Present from PR #67 |
+| shell state/access/flag stubs | yes | no | later polish possible | Present from PR #67 |
+| native video picker | no | yes | no | Local device-only selection, no upload |
+| native camera capture | no | yes | no | Device support still requires phone check |
+| selected media cache | no | yes | no | In-memory local descriptor/cache |
+| selected media to outbox handoff | no | no | yes | IMPORT-03+ |
+| local duplicate-precheck | no | no | yes | Later import slice |
+| snapshot/restart-resilience | no | no | yes | Later import slice |
+| repair/rebind | no | no | yes | Later import slice |
+| mobile foundation unit tests | partial | yes | later expansion possible | Adds selected-media store coverage |
 
 ## Recommended reconciliation strategy
-Decision:
-- split import into multiple smaller PRs
+Continue with small PR-ready import slices from fresh `main`.
 
-Current implementation status:
-- `MOB-CANON-IMPORT-01` is the first active reconciliation slice
-- `MOB-CANON-IMPORT-01` is runtime-verified on physical Android
-- the current slice restores shell, navigation, Russian visible baseline, local shell-state stubs, narrow shared placeholders, and minimal unit tests
-- the import is intentionally split and is not a blind overwrite of canonical `App.Mobile.Android` or `App.UI.Shared`
+The next action for this branch is validation only:
+- run App.Mobile.Android foundation unit tests
+- run Android build
+- perform physical Android phone check for picker/camera/selected-media cache
 
-Why:
-- the canonical repo already contains real mobile project placeholders and real Sprint 1 handoff docs
-- blindly overwriting canonical `App.Mobile.Android` or `App.UI.Shared` from the backup source would be unsafe
-- the missing foundation is broad enough that a single giant import PR would be hard to review and risky to reconcile
-- the safest path is to bring in the missing mobile foundation in ordered slices, validate each slice in the canonical repo, and only start Sprint 1 backend integration after the mobile foundation baseline is restored
-
-Recommended next import slice:
-- `MOB-CANON-IMPORT-02 - Android media picker/camera + selected-media cache reconciliation`
+Do not start MOB-CANON-IMPORT-03, backend/S1 integration, outbox, duplicate-precheck, restart snapshots, repair/rebind, or report UX in this branch.
 
 ## Not allowed
-- no blind robocopy over canonical `App.Mobile.Android`
+- no blind copy over canonical `App.Mobile.Android`
 - no overwriting canonical solution with old solution
 - no backend changes
 - no shared DTO/contracts changes
-- no App.UI.Shared ownership expansion without coder 2 review
+- no App.UI.Shared changes in this PR slice
 - no Sprint 1 upload code in this step
