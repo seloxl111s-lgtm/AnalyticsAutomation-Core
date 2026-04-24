@@ -85,7 +85,7 @@
 
         @if (!string.IsNullOrWhiteSpace(OutboxResultText))
         {
-            <p class="outbox-result">@OutboxResultText</p>
+            <p class="@(OutboxResultIsWarning ? "outbox-result outbox-result-warning" : "outbox-result")">@OutboxResultText</p>
         }
     </section>
 }
@@ -98,6 +98,8 @@
     private string MediaResultText { get; set; } = string.Empty;
 
     private string OutboxResultText { get; set; } = string.Empty;
+
+    private bool OutboxResultIsWarning { get; set; }
 
     private bool ShowQueueFoundationAction =>
         FeatureFlagReader.IsEnabled(global::App.Mobile.Android.Services.Stubs.StubFeatureFlagReader.QueueFoundationCardFlag);
@@ -117,6 +119,8 @@
     {
         var result = await MobileMediaService.PickVideoAsync();
         MediaResultText = result.Message;
+        OutboxResultText = string.Empty;
+        OutboxResultIsWarning = false;
         await RefreshCurrentSelectedMediaAsync();
     }
 
@@ -124,6 +128,8 @@
     {
         var result = await MobileMediaService.CaptureVideoAsync();
         MediaResultText = result.Message;
+        OutboxResultText = string.Empty;
+        OutboxResultIsWarning = false;
         await RefreshCurrentSelectedMediaAsync();
     }
 
@@ -131,13 +137,18 @@
     {
         await SelectedMediaStore.ClearAsync();
         MediaResultText = MobileUiText.UploadClearSelectionResultText;
+        OutboxResultText = string.Empty;
+        OutboxResultIsWarning = false;
         await RefreshCurrentSelectedMediaAsync();
     }
 
     private async Task EnqueueStubItemAsync()
     {
-        var result = await MobileOutboxService.EnqueueStubItemAsync();
+        var result = await MobileOutboxService.EnqueueCurrentSelectionAsync();
         OutboxResultText = result.Message;
+        OutboxResultIsWarning = !result.Applied;
+        MediaResultText = string.Empty;
+        await RefreshCurrentSelectedMediaAsync();
     }
 
     private async Task RefreshCurrentSelectedMediaAsync()
