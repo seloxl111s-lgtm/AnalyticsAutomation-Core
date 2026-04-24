@@ -1,13 +1,51 @@
-Title: MOB-CANON-IMPORT-02 — Android media picker/camera + selected-media cache reconciliation
+Title: MOB-CANON-IMPORT-02 - Android media picker/camera + selected-media cache reconciliation
 Coder: 3
 Module: App.Mobile.Android
 Task type: repository reconciliation / Android adapter / UI capability / test coverage
 
-Goal
-- Restore only the Android native media picker/camera and local selected-media cache slice from the previous mobile foundation into the canonical App.Mobile.Android project without importing outbox, backend, or shared UI changes.
+Upstream context
+- Base main SHA at task start: cb0b960
+- PR #67 state known: merged into main
+- Coordination log source: GitHub issue #89, not a repo file
+- Coordination log entries reviewed:
+  - #90 S2-37 Admin Review API AuthZ Scope
+  - #91 S2-39 Deploy Trigger Reconciliation
+  - #92 S2-40 Coordination Readiness and ChatGPT Sync Readiness
+- Handoff/task cards reviewed:
+  - docs/handoffs/s1-11-coder3-android-integration.md
+  - docs/handoffs/s1-11-backend-integration-note.md
+  - docs/handoffs/s1-12-sprint1-quality-gate.md
+  - docs/task-cards/MOB-CANON-IMPORT-01.txt
+  - docs/task-cards/MOB-CANON-IMPORT-02.txt
 
-What changes
-- mobile only
+Goal
+- Restore only the Android native media picker/camera and local selected-media cache slice from the previous mobile foundation into the canonical App.Mobile.Android project.
+
+Scope
+- Android media picker/camera only.
+- Selected-media descriptor/cache only.
+- Upload media capability card.
+- Selected local media card.
+- Clear local selection action.
+- App.Mobile.Android unit coverage for the local selected-media store.
+
+Out of scope
+- no backend integration
+- no App.UI.Shared changes
+- shared DTO/contracts unchanged
+- no auth/session/device binding
+- no create-report API
+- no businessObjectKey invention
+- no PreUploadCheck
+- no UploadReceipt
+- no direct upload runtime
+- no download flow
+- no outbox
+- no duplicate-precheck
+- no restart snapshots
+- no repair/rebind
+- no report draft shell
+- no lookup/filter/report UX
 
 New or changed contracts
 - shared DTO/contracts unchanged
@@ -28,11 +66,7 @@ Rollback
 - revert this import slice
 
 Definition of done
-- build succeeds
 - unit tests pass
-- Upload route opens native video picker
-- Upload route opens native camera capture when supported or shows safe Russian error
-- selected local media card renders after pick/capture
-- clear local selection works
-- no backend integration
-- no App.UI.Shared changes
+- Android build succeeds
+- changed-file scope remains limited to allowed mobile/docs/tests paths
+- physical Android runtime check remains pending for media picker/camera/selected-media cache on this fresh-main PR branch
