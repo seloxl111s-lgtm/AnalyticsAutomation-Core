@@ -38,6 +38,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<
             global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore,
             global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore>();
+        builder.Services.AddSingleton<
+            global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService,
+            global::App.Mobile.Android.Services.Stubs.StubMobileOutboxService>();
         builder.Services.AddSingleton<global::App.Mobile.Android.Navigation.MobileViewRegistry>();
         builder.Services.AddSingleton<global::App.Mobile.Android.Navigation.MobileNavigationState>();
 

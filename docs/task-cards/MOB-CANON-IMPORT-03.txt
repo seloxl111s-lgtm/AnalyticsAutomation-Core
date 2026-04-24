@@ -1,0 +1,78 @@
+Title: MOB-CANON-IMPORT-03 - Local outbox foundation reconciliation
+Coder: 3
+Module: App.Mobile.Android
+Task type: repository reconciliation / local queue foundation / UI capability / test coverage
+
+Upstream context
+- Base main SHA at task start: 0015c7d
+- PR #95 state known: merged into main
+- Coordination log source: GitHub issue #89, not a repo file
+- Coordination log entries reviewed:
+  - #90 S2-37 Admin Review API AuthZ Scope
+  - #91 S2-39 Deploy Trigger Reconciliation
+  - #92 S2-40 Coordination Readiness and ChatGPT Sync Readiness
+  - #94 S2-42 Formalize Manual-only Korobochka Deploy Policy
+- Handoff/task cards reviewed:
+  - docs/handoffs/s1-11-coder3-android-integration.md
+  - docs/handoffs/s1-11-backend-integration-note.md
+  - docs/handoffs/s1-12-sprint1-quality-gate.md
+  - docs/task-cards/MOB-CANON-IMPORT-02.txt
+  - docs/task-cards/MOB-CANON-IMPORT-03.txt
+
+Goal
+- Restore only the local in-memory outbox foundation slice from the previous mobile foundation into the canonical App.Mobile.Android project.
+
+Scope
+- local in-memory outbox foundation only
+- PendingSyncItem local models
+- IMobileOutboxService
+- StubMobileOutboxService
+- Upload local enqueue stub action
+- Queue local item rendering
+- Retry/remove local actions
+- App.Mobile.Android unit coverage for the local outbox service
+
+Out of scope
+- no selected-media-to-outbox handoff
+- no duplicate-precheck
+- no restart snapshots
+- no repair/rebind
+- no backend integration
+- no App.UI.Shared changes
+- shared DTO/contracts unchanged
+- no auth/session/device binding
+- no create-report API
+- no businessObjectKey invention
+- no PreUploadCheck
+- no UploadReceipt
+- no direct upload runtime
+- no download flow
+- no report draft shell
+- no lookup/filter/profile UX
+- no SQLite/local DB
+- no persistence
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- local in-memory outbox foundation only, no upload/sync/business actions
+
+Security
+- no auth/authz changes
+
+Observability
+- local queue state/result text in UI and build/test/handoff note
+
+Rollback
+- revert this import slice
+
+Definition of done
+- unit tests pass
+- Android build succeeds
+- whitespace format check succeeds
+- changed-file scope remains limited to allowed mobile/docs/tests paths
+- physical Android runtime check remains pending for Upload enqueue action and Queue retry/remove behavior

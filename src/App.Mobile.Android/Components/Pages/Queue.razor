@@ -1,16 +1,132 @@
 @page "/queue"
 @using global::App.Mobile.Android.Localization
-@using global::App.UI.Shared.Pages
 @inject global::App.Mobile.Android.Navigation.MobileNavigationState NavigationState
+@inject global::App.Mobile.Android.Services.Abstractions.IFeatureFlagReader FeatureFlagReader
+@inject global::App.Mobile.Android.Services.Abstractions.IMobileOutboxService MobileOutboxService
 
 <h1>@MobileUiText.QueueTitle</h1>
 <p>@MobileUiText.QueueIntro</p>
 
-<QueuePlaceholder />
+@if (ShowQueueFoundation)
+{
+    <section class="queue-foundation-card">
+        <h2>@MobileUiText.QueueFoundationCardTitle</h2>
+        <p class="queue-foundation-summary">@MobileUiText.QueueFoundationCardSummary</p>
+
+        @if (IsLoading)
+        {
+            <p class="queue-loading">@MobileUiText.QueueLoadingText</p>
+        }
+        else if (Items.Count == 0)
+        {
+            <div class="queue-empty-state">
+                <h3>@MobileUiText.QueueEmptyTitle</h3>
+                <p>@MobileUiText.QueueEmptyMessage</p>
+            </div>
+        }
+        else
+        {
+            <div class="queue-item-list">
+                @foreach (var item in Items)
+                {
+                    <article class="queue-item-card">
+                        <header class="queue-item-header">
+                            <h3>@item.Title</h3>
+                            <span class="queue-item-status">@MobileUiText.GetPendingSyncStatusText(item.Status)</span>
+                        </header>
+
+                        <p class="queue-item-summary">@item.SummaryText</p>
+
+                        <dl class="queue-item-meta">
+                            <div>
+                                <dt>@MobileUiText.QueueCreatedAtLabel</dt>
+                                <dd>@FormatCreatedAt(item.CreatedAtUtc)</dd>
+                            </div>
+                            <div>
+                                <dt>@MobileUiText.QueueStatusLabel</dt>
+                                <dd>@MobileUiText.GetPendingSyncStatusText(item.Status)</dd>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(item.LastActionText))
+                            {
+                                <div>
+                                    <dt>@MobileUiText.QueueLastActionLabel</dt>
+                                    <dd>@item.LastActionText</dd>
+                                </div>
+                            }
+                        </dl>
+
+                        <div class="queue-item-actions">
+                            <button type="button" class="btn btn-outline-secondary" @onclick="() => RetryAsync(item.ItemId)">
+                                @MobileUiText.QueueRetryButton
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" @onclick="() => RemoveAsync(item.ItemId)">
+                                @MobileUiText.QueueRemoveButton
+                            </button>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(ResultText))
+        {
+            <p class="queue-result">@ResultText</p>
+        }
+    </section>
+}
 
 @code {
-    protected override void OnInitialized()
+    private IReadOnlyList<global::App.Mobile.Android.Outbox.PendingSyncItem> Items { get; set; } =
+        Array.Empty<global::App.Mobile.Android.Outbox.PendingSyncItem>();
+
+    private bool IsLoading { get; set; }
+
+    private string ResultText { get; set; } = string.Empty;
+
+    private bool ShowQueueFoundation =>
+        FeatureFlagReader.IsEnabled(global::App.Mobile.Android.Services.Stubs.StubFeatureFlagReader.QueueFoundationCardFlag);
+
+    protected override async Task OnInitializedAsync()
     {
         NavigationState.SetCurrentView(global::App.Mobile.Android.Navigation.MobileViewId.Queue);
+
+        if (!ShowQueueFoundation)
+        {
+            return;
+        }
+
+        await LoadItemsAsync();
+    }
+
+    private async Task RetryAsync(string itemId)
+    {
+        var result = await MobileOutboxService.RetryAsync(itemId);
+        ResultText = result.Message;
+        await LoadItemsAsync();
+    }
+
+    private async Task RemoveAsync(string itemId)
+    {
+        var result = await MobileOutboxService.RemoveAsync(itemId);
+        ResultText = result.Message;
+        await LoadItemsAsync();
+    }
+
+    private async Task LoadItemsAsync()
+    {
+        IsLoading = true;
+        try
+        {
+            Items = await MobileOutboxService.GetItemsAsync();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private static string FormatCreatedAt(DateTimeOffset createdAtUtc)
+    {
+        return createdAtUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss");
     }
 }
