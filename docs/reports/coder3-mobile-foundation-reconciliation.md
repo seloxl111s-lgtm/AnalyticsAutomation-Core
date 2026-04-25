@@ -66,7 +66,7 @@ The current branch is only for validation of MOB-CANON-IMPORT-06:
 - run App.Mobile.Android foundation unit tests
 - run Android build
 - run whitespace format check
-- physical Android full-restart check is pending for restored metadata-only state
+- physical Android full-restart check passed for restored metadata-only state
 
 Do not start MOB-CANON-IMPORT-07, backend/S1 integration, repair/rebind, report draft, or report UX in this branch.
 

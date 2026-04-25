@@ -55,17 +55,17 @@
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
 ## Physical Android runtime check
-- Result: pending.
-- Runtime status: not_done.
-- Manual check must verify restored selected media card, restored queue items, and reselect-required warning after a full restart.
+- Result: passed.
+- Runtime status: import06 phone ok.
+- Selected media metadata survives full restart.
+- Queue draft metadata survives full restart.
+- Restored metadata-only state is explicit.
+- Restored selected media cannot be handed off without reselecting the file.
+- Reselect-required warning works.
+- Retry/remove still work.
 
 ## Manual steps pending
-- Physical Android full-restart check for restored selected media card.
-- Physical Android full-restart check for restored queue items.
-- Confirm restored metadata-only state is explicit.
-- Confirm restored selected media cannot be handed off without reselecting the file.
-- Confirm reselect-required warning works.
-- Confirm retry/remove still work.
+- none for IMPORT-06.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
