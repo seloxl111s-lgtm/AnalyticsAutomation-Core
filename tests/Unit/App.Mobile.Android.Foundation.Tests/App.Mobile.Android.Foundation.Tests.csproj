@@ -37,11 +37,15 @@
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\ILocalDuplicatePrecheckService.cs" Link="LinkedProduction\Services\Abstractions\ILocalDuplicatePrecheckService.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileAccessContext.cs" Link="LinkedProduction\Services\Abstractions\IMobileAccessContext.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileOutboxService.cs" Link="LinkedProduction\Services\Abstractions\IMobileOutboxService.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileOutboxSnapshotStore.cs" Link="LinkedProduction\Services\Abstractions\IMobileOutboxSnapshotStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileSelectedMediaStore.cs" Link="LinkedProduction\Services\Abstractions\IMobileSelectedMediaStore.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Abstractions\IMobileSelectedMediaSnapshotStore.cs" Link="LinkedProduction\Services\Abstractions\IMobileSelectedMediaSnapshotStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemStatus.cs" Link="LinkedProduction\Outbox\PendingSyncItemStatus.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItem.cs" Link="LinkedProduction\Outbox\PendingSyncItem.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncItemLocalMediaDraft.cs" Link="LinkedProduction\Outbox\PendingSyncItemLocalMediaDraft.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Outbox\PendingSyncOperationResult.cs" Link="LinkedProduction\Outbox\PendingSyncOperationResult.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\FileMobileOutboxSnapshotStore.cs" Link="LinkedProduction\Services\Local\FileMobileOutboxSnapshotStore.cs" />
+    <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\FileMobileSelectedMediaSnapshotStore.cs" Link="LinkedProduction\Services\Local\FileMobileSelectedMediaSnapshotStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\InMemoryMobileSelectedMediaStore.cs" Link="LinkedProduction\Services\Local\InMemoryMobileSelectedMediaStore.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Local\LocalOutboxDuplicatePrecheckService.cs" Link="LinkedProduction\Services\Local\LocalOutboxDuplicatePrecheckService.cs" />
     <Compile Include="..\..\..\src\App.Mobile.Android\Services\Stubs\StubFeatureFlagReader.cs" Link="LinkedProduction\Services\Stubs\StubFeatureFlagReader.cs" />

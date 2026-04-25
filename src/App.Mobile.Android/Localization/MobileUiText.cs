@@ -11,12 +11,17 @@ internal static class MobileUiText
     public const string MenuQueue = "Очередь";
 
     public const string HomeTitle = "Главная";
-    public const string HomeIntro = "Текущая Android-оболочка работает локально и показывает только базовую мобильную навигацию без backend-интеграции.";
+    public const string HomeIntro =
+        "Текущая Android-оболочка работает локально и показывает только базовую мобильную навигацию без backend-интеграции.";
 
     public const string UploadTitle = "Загрузка";
-    public const string UploadIntro = "На этом срезе доступны локальный выбор/запись видео на устройстве и локальная очередь-заглушка. Файлы не копируются, не сохраняются отдельно и не отправляются в backend.";
+    public const string UploadIntro =
+        "На этом срезе доступны локальный выбор и запись видео на устройстве, а также локальная очередь-черновик. " +
+        "Файлы не копируются, не сохраняются отдельно и не отправляются в backend.";
     public const string UploadCapabilityCardTitle = "Локальные media-возможности устройства";
-    public const string UploadCapabilityCardSummary = "Текущий Android baseline открывает системный выбор видео и запись видео на устройстве, если камера поддерживается. Это только local device media без upload и sync.";
+    public const string UploadCapabilityCardSummary =
+        "Текущий Android baseline открывает системный выбор видео и запись видео на устройстве, если камера поддерживается. " +
+        "Это только local device media без upload и sync.";
     public const string UploadLocalDeviceBadge = "Только на устройстве";
     public const string UploadFilePickerLabel = "Файловый seam";
     public const string UploadGalleryVideoLabel = "Выбор видео из галереи";
@@ -27,39 +32,63 @@ internal static class MobileUiText
     public const string UploadNativePickerTitle = "Выберите одно видео";
     public const string UploadNativeCaptureTitle = "Запишите одно видео";
     public const string UploadSelectedVideoFallbackName = "без имени";
-    public const string UploadNativePickerCancelledText = "Выбор видео отменён. Никакие файлы не были сохранены или отправлены.";
-    public const string UploadNativePickerUnavailableText = "Не удалось открыть системный выбор видео на устройстве. Проверьте разрешения и повторите попытку.";
-    public const string UploadNativePickerFailedText = "Не удалось завершить локальный выбор видео. Это только Android media baseline без upload и sync.";
-    public const string UploadNativeCaptureCancelledText = "Запись видео отменена. Никакие файлы не были сохранены или отправлены.";
-    public const string UploadNativeCaptureUnavailableText = "Системная запись видео недоступна на этом устройстве или сейчас не поддерживается.";
-    public const string UploadNativeCapturePermissionDeniedText = "Доступ к камере не предоставлен. Разрешите использование камеры и повторите попытку.";
-    public const string UploadNativeCaptureFailedText = "Не удалось завершить локальную запись видео. Это только Android media baseline без upload и sync.";
+    public const string UploadNativePickerCancelledText =
+        "Выбор видео отменён. Никакие файлы не были сохранены или отправлены.";
+    public const string UploadNativePickerUnavailableText =
+        "Не удалось открыть системный выбор видео на устройстве. Проверьте разрешения и повторите попытку.";
+    public const string UploadNativePickerFailedText =
+        "Не удалось завершить локальный выбор видео. Это только Android media baseline без upload и sync.";
+    public const string UploadNativeCaptureCancelledText =
+        "Запись видео отменена. Никакие файлы не были сохранены или отправлены.";
+    public const string UploadNativeCaptureUnavailableText =
+        "Системная запись видео недоступна на этом устройстве или сейчас не поддерживается.";
+    public const string UploadNativeCapturePermissionDeniedText =
+        "Доступ к камере не предоставлен. Разрешите использование камеры и повторите попытку.";
+    public const string UploadNativeCaptureFailedText =
+        "Не удалось завершить локальную запись видео. Это только Android media baseline без upload и sync.";
     public const string UploadSelectedMediaCardTitle = "Текущий локально выбранный медиафайл";
     public const string UploadSelectedMediaSourceLabel = "Источник";
     public const string UploadSelectedMediaFileNameLabel = "Имя файла";
     public const string UploadSelectedMediaContentTypeLabel = "MIME-тип";
     public const string UploadSelectedMediaSelectedAtLabel = "Выбрано";
     public const string UploadSelectedMediaStateLabel = "Состояние";
-    public const string UploadSelectedMediaStateText = "Локальный доступ к файлу активен только в текущем запуске, без upload и sync";
+    public const string UploadSelectedMediaLiveHandleStateText =
+        "Локальный доступ к файлу активен только в текущем запуске, без upload и sync.";
+    public const string UploadSelectedMediaRestoredMetadataOnlyStateText =
+        "После перезапуска восстановлены только локальные метаданные без живого доступа к файлу.";
+    public const string UploadSelectedMediaRestoredMetadataNoteText =
+        "Чтобы снова передать файл в очередь после перезапуска, выберите тот же видеофайл ещё раз.";
     public const string UploadClearSelectionButton = "Очистить локальный выбор";
-    public const string UploadClearSelectionResultText = "Локальный выбранный медиафайл очищен.";
+    public const string UploadClearSelectionResultText = "Локально выбранный медиафайл очищен.";
     public const string UploadUnknownContentTypeText = "Неизвестно";
+
     public const string LocalDuplicatePrecheckCardTitle = "Локальная предварительная проверка очереди";
     public const string LocalDuplicatePrecheckStatusLabel = "Статус";
-    public const string LocalDuplicatePrecheckNoCurrentSelectionText = "Сначала выберите или запишите видео. Локальная предварительная проверка очереди пока ничего не сравнивает.";
-    public const string LocalDuplicatePrecheckNoKnownDuplicateText = "Локальная предварительная проверка не нашла дубликатов в текущей очереди. Это не финальная backend-проверка.";
-    public const string LocalDuplicatePrecheckLikelyAlreadyQueuedText = "Похоже, выбранное видео уже есть в локальной очереди. Повторная передача заблокирована только локальной предварительной проверкой, это не финальная backend-проверка.";
-    public const string LocalDuplicatePrecheckLocalOnlyNote = "Сравнение выполняется только по текущему локальному выбору и draft-элементам очереди в памяти устройства.";
+    public const string LocalDuplicatePrecheckNoCurrentSelectionText =
+        "Сначала выберите или запишите видео. Локальная предварительная проверка очереди пока ничего не сравнивает.";
+    public const string LocalDuplicatePrecheckNoKnownDuplicateText =
+        "Локальная предварительная проверка не нашла дубликатов в текущей очереди. Это не финальная backend-проверка.";
+    public const string LocalDuplicatePrecheckLikelyAlreadyQueuedText =
+        "Похоже, выбранное видео уже есть в локальной очереди. Повторная передача заблокирована только локальной " +
+        "предварительной проверкой, это не финальная backend-проверка.";
+    public const string LocalDuplicatePrecheckLocalOnlyNote =
+        "Сравнение выполняется только по текущему локальному выбору и draft-элементам очереди в памяти устройства.";
     public const string UploadEnqueueStubButton = "Передать выбранное видео в локальную очередь";
-    public const string UploadOutboxActionHint = "Локальный handoff переносит только текущее выбранное видео в черновик очереди в памяти устройства. Upload, sync и backend-действия не выполняются.";
+    public const string UploadOutboxActionHint =
+        "Локальный handoff переносит только текущее выбранное видео в черновик очереди на устройстве. " +
+        "После полного перезапуска могут сохраниться только метаданные. Upload, sync и backend-действия не выполняются.";
 
     public const string QueueTitle = "Очередь";
-    public const string QueueIntro = "Это локальный экран-заглушка для будущей очереди. На этом срезе нет upload, sync и бизнес-действий.";
+    public const string QueueIntro =
+        "Это локальный экран очереди для мобильного foundation baseline. Здесь нет upload, sync и бизнес-действий.";
     public const string QueueFoundationCardTitle = "Локальная карточка очереди";
-    public const string QueueFoundationCardSummary = "Текущий outbox foundation хранит только локальные in-memory элементы-заглушки без upload, sync и постоянного хранения.";
+    public const string QueueFoundationCardSummary =
+        "Текущий outbox foundation хранит локальные черновики на устройстве. После полного перезапуска " +
+        "восстанавливаются только метаданные без живого доступа к файлам.";
     public const string QueueLoadingText = "Загружается локальная очередь...";
     public const string QueueEmptyTitle = "Очередь пока пуста";
-    public const string QueueEmptyMessage = "Добавьте элемент из раздела «Загрузка», чтобы проверить локальный foundation очереди.";
+    public const string QueueEmptyMessage =
+        "Добавьте элемент из раздела «Загрузка», чтобы проверить локальный foundation очереди.";
     public const string QueueRetryButton = "Повторить (заглушка)";
     public const string QueueRemoveButton = "Удалить";
     public const string QueueCreatedAtLabel = "Создано";
@@ -70,18 +99,38 @@ internal static class MobileUiText
     public const string QueueMediaContentTypeLabel = "MIME-тип";
     public const string QueueMediaSelectedAtLabel = "Выбрано";
     public const string QueueMediaDraftStateLabel = "Состояние черновика";
-    public const string QueueMediaDraftLocalOnlyText = "Локальный медиачерновик привязан к файлу только в текущем запуске";
+    public const string QueueMediaDraftLocalOnlyText =
+        "Локальный media-черновик привязан к файлу только в текущем запуске.";
+    public const string QueueMediaDraftRestoredMetadataOnlyText =
+        "После перезапуска доступны только локальные метаданные черновика.";
+    public const string QueueRestoredMetadataOnlyNoteText =
+        "После перезапуска для реального доступа к файлу потребуется повторный выбор и последующая привязка.";
 
     public const string NotFoundTitle = "Страница не найдена";
-    public const string NotFoundMessage = "Запрошенный экран не найден в текущей локальной оболочке.";
+    public const string NotFoundMessage =
+        "Запрошенный экран не найден в текущей локальной оболочке.";
 
-    public const string PendingSyncItemSummary = "Элемент создан только для локальной проверки очереди без отправки, синхронизации и постоянного хранения.";
-    public const string PendingSyncEnqueuedLastAction = "Элемент добавлен в локальную очередь как заглушка.";
-    public const string PendingSyncRetriedLastAction = "Выполнен локальный повтор без отправки.";
-    public const string PendingSyncItemNotFoundText = "Элемент локальной очереди не найден.";
-    public const string PendingSyncNoCurrentSelectionText = "Сначала выберите или запишите видео, чтобы передать его в локальную очередь.";
-    public const string PendingSyncMediaDraftSummary = "Элемент очереди содержит только локальный медиачерновик в памяти устройства без upload, sync и backend-действий.";
-    public const string PendingSyncMediaDraftEnqueuedLastAction = "Выбранное видео передано в локальный черновик очереди.";
+    public const string PendingSyncItemSummary =
+        "Элемент создан только для локальной проверки очереди. После перезапуска могут сохраниться только метаданные " +
+        "без upload и sync.";
+    public const string PendingSyncEnqueuedLastAction =
+        "Элемент добавлен в локальную очередь как заглушка.";
+    public const string PendingSyncRetriedLastAction =
+        "Выполнен локальный повтор без отправки.";
+    public const string PendingSyncItemNotFoundText =
+        "Элемент локальной очереди не найден.";
+    public const string PendingSyncNoCurrentSelectionText =
+        "Сначала выберите или запишите видео, чтобы передать его в локальную очередь.";
+    public const string PendingSyncReselectAfterRestartText =
+        "После перезапуска восстановлены только локальные метаданные выбранного видео. " +
+        "Чтобы снова передать его в очередь, выберите тот же файл ещё раз.";
+    public const string PendingSyncMediaDraftSummary =
+        "Элемент очереди содержит только локальный медиа-черновик на устройстве без upload, sync и backend-действий. " +
+        "После перезапуска могут остаться только метаданные.";
+    public const string PendingSyncMediaDraftEnqueuedLastAction =
+        "Выбранное видео передано в локальный черновик очереди.";
+    public const string PendingSyncRestoredMetadataLastActionText =
+        "После перезапуска восстановлены только локальные метаданные черновика. Реальный доступ к файлу нужно привязать повторно позже.";
 
     public static string GetShellModeText(global::App.Mobile.Android.State.MobileShellMode mode)
     {
@@ -96,7 +145,8 @@ internal static class MobileUiText
 
     public static string GetShellBannerText(global::App.Mobile.Android.State.MobileShellMode mode)
     {
-        return $"Локальное состояние оболочки: {GetShellModeText(mode)}. Это только локальная заглушка shell-state, а не реальная auth/session/backend интеграция.";
+        return $"Локальное состояние оболочки: {GetShellModeText(mode)}. " +
+               "Это только локальная заглушка shell-state, а не реальная auth/session/backend интеграция.";
     }
 
     public static string GetMediaCapabilityStateText(global::App.Mobile.Android.Media.MobileMediaCapabilityState state)
@@ -122,6 +172,13 @@ internal static class MobileUiText
         };
     }
 
+    public static string GetUploadSelectedMediaStateText(bool hasLocalReadHandle)
+    {
+        return hasLocalReadHandle
+            ? UploadSelectedMediaLiveHandleStateText
+            : UploadSelectedMediaRestoredMetadataOnlyStateText;
+    }
+
     public static string GetLocalDuplicatePrecheckStatusText(
         global::App.Mobile.Android.DuplicatePrecheck.LocalDuplicatePrecheckStatus status)
     {
@@ -145,6 +202,13 @@ internal static class MobileUiText
         };
     }
 
+    public static string GetQueueMediaDraftStateText(bool hasLocalReadHandle)
+    {
+        return hasLocalReadHandle
+            ? QueueMediaDraftLocalOnlyText
+            : QueueMediaDraftRestoredMetadataOnlyText;
+    }
+
     public static string GetPendingSyncItemTitle(int sequence)
     {
         return $"Локальный элемент очереди #{sequence}";
@@ -152,7 +216,7 @@ internal static class MobileUiText
 
     public static string GetPendingSyncMediaDraftTitle(string fileName)
     {
-        return $"Локальный медиачерновик: {fileName}";
+        return $"Локальный медиа-черновик: {fileName}";
     }
 
     public static string GetPendingSyncEnqueueResultText(string title)

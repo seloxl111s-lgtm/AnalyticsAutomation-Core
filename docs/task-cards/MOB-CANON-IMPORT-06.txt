@@ -1,0 +1,85 @@
+Title: MOB-CANON-IMPORT-06 - Restart-resilience snapshot reconciliation
+Coder: 3
+Module: App.Mobile.Android
+Task type: repository reconciliation / local JSON metadata snapshots / restart resilience / test coverage
+
+Base main SHA at task start:
+- 6b22b69
+
+Coordination log entries reviewed:
+- #90 S2-37 Admin Review API AuthZ Scope
+- #91 S2-39 Deploy Trigger Reconciliation
+- #92 S2-40 Coordination Readiness and ChatGPT Sync Readiness
+- #94 S2-42 Formalize Manual-only Korobochka Deploy Policy
+
+Handoff/task cards reviewed:
+- docs/handoffs/s1-11-coder3-android-integration.md
+- docs/handoffs/s1-11-backend-integration-note.md
+- docs/handoffs/s1-12-sprint1-quality-gate.md
+- docs/task-cards/MOB-CANON-IMPORT-05.txt
+- docs/task-cards/MOB-CANON-IMPORT-06.txt
+
+Goal
+- Restore only the restart-resilience JSON metadata snapshot slice from the previous mobile foundation into the canonical App.Mobile.Android project without importing repair/rebind, report draft, backend integration, stream persistence, file copy, or shared UI changes.
+
+What changes
+- mobile only
+- selected-media JSON metadata snapshot store
+- outbox JSON metadata snapshot store
+- restored selected-media metadata-only state
+- restored queue draft metadata-only state
+- reselect-required warning for metadata-only selected media
+- restart-resilience unit tests
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- local JSON metadata snapshots only for selected media and local outbox drafts
+- no backend save
+- no sync
+- no upload
+- no stream persistence
+- no file copy
+- no FullPath-based design
+
+Security
+- no auth/authz changes
+- no auth/session/device binding
+
+Observability
+- restored metadata-only state in Upload and Queue
+- reselect-required warning in Upload
+- build/test/handoff note
+
+Rollback
+- revert this import slice
+
+Definition of done
+- build succeeds
+- unit tests pass
+- selected media metadata survives full restart
+- queue draft metadata survives full restart
+- restored metadata-only state is explicit
+- restored selected media cannot be handed off without reselecting the file
+- reselect-required warning works
+- retry/remove still work
+- no backend integration
+- no App.UI.Shared changes
+- shared DTO/contracts unchanged
+
+Out of scope
+- repair/rebind
+- backend integration
+- shared DTO/contracts changes
+- App.UI.Shared changes
+- PreUploadCheck
+- UploadReceipt
+- direct upload runtime
+- report draft
+- lookup/filter/profile UX
+- sync/download flow
+- final offline cache policy
