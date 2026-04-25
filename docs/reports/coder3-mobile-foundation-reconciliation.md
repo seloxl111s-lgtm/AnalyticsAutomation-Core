@@ -63,7 +63,7 @@ The current branch is only for validation of MOB-CANON-IMPORT-05:
 - run App.Mobile.Android foundation unit tests
 - run Android build
 - run whitespace format check
-- physical Android phone check is pending for local duplicate-precheck behavior
+- physical Android phone check passed for local duplicate-precheck behavior
 
 Do not start MOB-CANON-IMPORT-06, backend/S1 integration, restart snapshots, repair/rebind, report draft, or report UX in this branch.
 

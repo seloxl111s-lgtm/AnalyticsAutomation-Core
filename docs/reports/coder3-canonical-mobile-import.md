@@ -54,17 +54,16 @@
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
 ## Physical Android runtime check
-- Result: pending.
-- Runtime status: not_done.
-- Manual check must verify local duplicate-precheck warning and preserved non-duplicate handoff.
+- Result: passed.
+- Runtime status: import05 phone ok.
+- Duplicate current selection is blocked.
+- Duplicate rejection does not clear current selected media.
+- Duplicate rejection does not add a second queue item.
+- Non-duplicate handoff still works.
+- Retry/remove still work.
 
 ## Manual steps pending
-- Physical Android runtime check for local duplicate-precheck warning and preserved non-duplicate handoff.
-- Confirm duplicate current selection is blocked.
-- Confirm duplicate rejection does not clear current selected media.
-- Confirm duplicate rejection does not add a second queue item.
-- Confirm non-duplicate handoff still works.
-- Confirm retry/remove still work.
+- none for IMPORT-05.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
