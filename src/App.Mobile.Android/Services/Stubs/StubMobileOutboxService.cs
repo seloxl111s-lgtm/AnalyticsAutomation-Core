@@ -31,13 +31,16 @@ internal sealed class StubMobileOutboxService :
     private readonly List<global::App.Mobile.Android.Outbox.PendingSyncItem> _items = [];
     private readonly Dictionary<string, Func<Task<global::System.IO.Stream>>> _itemReadFactories = [];
     private readonly global::Microsoft.Extensions.Logging.ILogger<StubMobileOutboxService> _logger;
+    private readonly global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService _duplicatePrecheckService;
     private readonly global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore _selectedMediaStore;
     private int _sequence;
 
     public StubMobileOutboxService(
+        global::App.Mobile.Android.Services.Abstractions.ILocalDuplicatePrecheckService duplicatePrecheckService,
         global::App.Mobile.Android.Services.Abstractions.IMobileSelectedMediaStore selectedMediaStore,
         global::Microsoft.Extensions.Logging.ILogger<StubMobileOutboxService> logger)
     {
+        _duplicatePrecheckService = duplicatePrecheckService;
         _selectedMediaStore = selectedMediaStore;
         _logger = logger;
     }
@@ -62,6 +65,16 @@ internal sealed class StubMobileOutboxService :
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
+
+        var currentSelection = await _selectedMediaStore.GetCurrentAsync(cancellationToken);
+        var precheckResult = _duplicatePrecheckService.CheckAgainstOutbox(currentSelection, GetItemsSnapshot());
+        if (!precheckResult.CanEnqueue)
+        {
+            return new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
+                Applied: false,
+                Message: precheckResult.Message,
+                Item: null);
+        }
 
         var currentSelectionEntry = await _selectedMediaStore.TakeCurrentAsync(cancellationToken);
         if (currentSelectionEntry is null)
@@ -207,7 +220,18 @@ internal sealed class StubMobileOutboxService :
         return Task.FromResult(
             new global::App.Mobile.Android.Outbox.PendingSyncOperationResult(
                 Applied: true,
-                Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncRemoveResultText(removedItem.Title),
-                Item: removedItem));
+            Message: global::App.Mobile.Android.Localization.MobileUiText.GetPendingSyncRemoveResultText(removedItem.Title),
+            Item: removedItem));
+    }
+
+    private IReadOnlyList<global::App.Mobile.Android.Outbox.PendingSyncItem> GetItemsSnapshot()
+    {
+        lock (_gate)
+        {
+            return
+            [
+                .. _items
+            ];
+        }
     }
 }

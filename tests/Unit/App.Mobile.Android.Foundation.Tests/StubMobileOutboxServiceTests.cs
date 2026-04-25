@@ -32,6 +32,49 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
+    public async Task EnqueueCurrentSelectionAsyncDuplicateCurrentSelectionReturnsAppliedFalse()
+    {
+        var (service, selectedMediaStore) = CreateService();
+        await CacheCurrentSelectionAsync(selectedMediaStore, cacheKey: "duplicate-cache-key");
+        await service.EnqueueCurrentSelectionAsync();
+        await CacheCurrentSelectionAsync(selectedMediaStore, cacheKey: "duplicate-cache-key");
+
+        var result = await service.EnqueueCurrentSelectionAsync();
+
+        Assert.False(result.Applied);
+        Assert.Null(result.Item);
+    }
+
+    [Fact]
+    public async Task EnqueueCurrentSelectionAsyncDuplicateRejectionDoesNotClearCurrentSelectedMedia()
+    {
+        var (service, selectedMediaStore) = CreateService();
+        await CacheCurrentSelectionAsync(selectedMediaStore, cacheKey: "duplicate-cache-key");
+        await service.EnqueueCurrentSelectionAsync();
+        await CacheCurrentSelectionAsync(selectedMediaStore, cacheKey: "duplicate-cache-key");
+
+        await service.EnqueueCurrentSelectionAsync();
+        var currentSelection = await selectedMediaStore.GetCurrentAsync();
+
+        Assert.NotNull(currentSelection);
+        Assert.Equal("duplicate-cache-key", currentSelection!.CacheKey);
+    }
+
+    [Fact]
+    public async Task EnqueueCurrentSelectionAsyncDuplicateRejectionDoesNotAddSecondQueueItem()
+    {
+        var (service, selectedMediaStore) = CreateService();
+        await CacheCurrentSelectionAsync(selectedMediaStore, cacheKey: "duplicate-cache-key");
+        await service.EnqueueCurrentSelectionAsync();
+        await CacheCurrentSelectionAsync(selectedMediaStore, cacheKey: "duplicate-cache-key");
+
+        await service.EnqueueCurrentSelectionAsync();
+        var items = await service.GetItemsAsync();
+
+        Assert.Single(items);
+    }
+
+    [Fact]
     public async Task EnqueueStubItemAsyncStillWorksForCompatibility()
     {
         var (service, _) = CreateService();
@@ -114,9 +157,11 @@ public sealed class StubMobileOutboxServiceTests
         global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore SelectedMediaStore) CreateService()
     {
         var selectedMediaStore = new global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore();
+        var duplicatePrecheckService = new global::App.Mobile.Android.Services.Local.LocalOutboxDuplicatePrecheckService();
 
         return (
             new global::App.Mobile.Android.Services.Stubs.StubMobileOutboxService(
+                duplicatePrecheckService,
                 selectedMediaStore,
                 global::Microsoft.Extensions.Logging.Abstractions.NullLogger<
                     global::App.Mobile.Android.Services.Stubs.StubMobileOutboxService>.Instance),
@@ -124,11 +169,12 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     private static Task CacheCurrentSelectionAsync(
-        global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore selectedMediaStore)
+        global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore selectedMediaStore,
+        string cacheKey = "selected-media-cache-key")
     {
         return selectedMediaStore.CacheAsync(
             new global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor(
-                CacheKey: "selected-media-cache-key",
+                CacheKey: cacheKey,
                 Source: global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo,
                 FileName: "sample.mp4",
                 ContentType: "video/mp4",
