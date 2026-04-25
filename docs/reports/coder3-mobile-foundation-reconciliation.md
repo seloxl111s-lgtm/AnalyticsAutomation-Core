@@ -71,7 +71,7 @@ The current branch is only for validation of MOB-CANON-IMPORT-07:
 - run App.Mobile.Android foundation unit tests
 - run Android build
 - run whitespace format check
-- physical Android repair/rebind check is pending
+- physical Android repair/rebind check passed
 
 Do not start report, UX, profile, backend/S1 integration, incident creation, fraud, or worker logic in this branch.
 

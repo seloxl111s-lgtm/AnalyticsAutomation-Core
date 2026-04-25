@@ -61,16 +61,16 @@
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 
 ## Physical Android runtime check
-- Result: pending.
-- Runtime status: not_done.
-- Manual check must verify repairing a restored queue draft from the current selected media.
+- Result: passed.
+- Runtime status: import07 phone ok.
+- Restored queue draft can be rebound from current selected media.
+- Mismatch is blocked with Russian warning.
+- Successful repair clears current selected media.
+- Metadata-only note disappears after successful repair.
+- Retry/remove still work.
 
 ## Manual steps pending
-- Physical Android runtime check for repairing a restored queue draft from the current selected media.
-- Confirm mismatch is blocked with Russian warning.
-- Confirm successful repair clears current selected media.
-- Confirm metadata-only note disappears after successful repair.
-- Confirm retry/remove still work.
+- none for IMPORT-07.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
