@@ -1,7 +1,7 @@
 # Coder 3 Canonical Mobile Import
 
 ## Current step
-- MOB-CANON-BACKEND-00 readiness checkpoint.
+- MOB-CANON-BACKEND-01 unresolved business-object binding guard.
 
 ## IMPORT-01..07 completed in main
 - Android media/outbox foundation is complete in `main` through IMPORT-07.
@@ -15,7 +15,10 @@
   - IMPORT-06 restart snapshots
   - IMPORT-07 repair/rebind
 - Current task is docs-only backend readiness planning.
-- Next code step is blocked pending readiness recommendation and coordination decision.
+- PR #106 is merged.
+- Approved source search result: no approved Android source found for `businessObjectKey` / report draft / business object binding before `PreUploadCheck`.
+- This step adds an Android-local unresolved guard only.
+- No production `PreUploadCheck` runtime is included.
 
 ## Base and coordination state
 - Base main SHA at task start: `e4dd243`
@@ -107,5 +110,5 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- Blocked pending MOB-CANON-BACKEND-00 readiness recommendation.
+- Blocked pending owner/coder 1 answer for the approved Android `businessObjectKey` source.
 - Do not start report, UX, profile, backend, or worker work in this branch.
