@@ -66,8 +66,9 @@
 - `git diff --check`
 
 ## Physical Android runtime check
-- Result: runtime localization fix pending.
-- Runtime status: report05 ru re-check pending.
+- Result: passed after runtime localization fixes.
+- Runtime localization check: passed.
+- Runtime status: report05 ru ok.
 - Confirmed:
   - validation summary renders in report draft.
   - missing required fields are shown in Russian.
@@ -84,10 +85,11 @@
 - Fix scope:
   - ReportDraft visible text and `MobileUiText` Russian localization only.
   - User-facing backend/upload/save/validation wording replaced with Russian wording where applicable.
+  - Empty report field placeholders render current Russian localization even for existing local placeholder field state.
   - Technical identifiers remain unchanged where needed.
 
 ## Manual steps pending
-- physical Android re-check for Russian localization.
+- none for REPORT-05-R1.
 
 ## Next code step
 - REPORT-06 local report draft snapshot persistence, or wait for backend concrete `businessObjectKey` source.
