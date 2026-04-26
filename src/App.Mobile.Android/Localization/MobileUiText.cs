@@ -88,7 +88,7 @@ internal static class MobileUiText
     public const string ReportFieldDetonatorLabel = "Детонатор";
     public const string ReportFieldNsuLabel = "НСУ";
     public const string ReportFieldPlaceholderText =
-        "Поле пока работает как локальная заглушка без финального серверного контракта и без справочника значений.";
+        "Поле пока пустое. Заполните значение локально; серверный справочник будет подключен позже.";
     public const string ReportDraftEditFieldButton = "Изменить поле";
     public const string ReportDraftSaveFieldValueButton = "Сохранить значение";
     public const string ReportDraftCancelFieldEditButton = "Отмена";
