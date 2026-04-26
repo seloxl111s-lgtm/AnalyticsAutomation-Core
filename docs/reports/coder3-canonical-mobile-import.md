@@ -64,6 +64,12 @@
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 - `git diff --check`
 
+## PR #109 runtime layout fix
+- Physical Android check found that the bottom navigation/footer could grow too large and cover lower page content.
+- Fix scope: reduce primary bottom navigation to report-first tabs (`Полеты`, `Очередь`, `Профиль`) and ensure page content has enough bottom spacing above the fixed nav.
+- `/upload` remains available as a service/debug route, but it is not a primary bottom tab.
+- Production `PreUploadCheck` remains blocked and no fake `businessObjectKey` is introduced.
+
 ## Physical Android runtime check
 - Result: passed.
 - Runtime status: report-baseline phone ok.
@@ -78,7 +84,7 @@
   - production `PreUploadCheck` remains blocked.
 
 ## Manual steps pending
-- none for REPORT-00-03.
+- physical Android re-check for REPORT-00-03-R1 bottom nav/content scroll.
 
 ## Next code step
 - Owner decision dependent after this baseline:
