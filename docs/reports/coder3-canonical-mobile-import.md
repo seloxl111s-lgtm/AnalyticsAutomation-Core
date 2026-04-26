@@ -66,9 +66,9 @@
 - `git diff --check`
 
 ## Physical Android runtime check
-- Result: pending.
-- Runtime status: not_done for REPORT-05.
-- Pending checks:
+- Result: passed.
+- Runtime status: report05 phone ok.
+- Confirmed:
   - validation summary renders in report draft.
   - missing required fields are shown in Russian.
   - missing video attachment is shown in Russian.
@@ -80,7 +80,7 @@
   - production `PreUploadCheck` remains blocked.
 
 ## Manual steps pending
-- physical Android check for REPORT-05 validation summary and local queue gating.
+- none for REPORT-05.
 
 ## Next code step
 - REPORT-06 local report draft snapshot persistence, or wait for backend concrete `businessObjectKey` source.

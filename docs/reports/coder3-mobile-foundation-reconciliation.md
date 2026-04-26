@@ -22,6 +22,7 @@ The canonical repository contains the complete IMPORT-01..07 Android media/outbo
 `MOB-CANON-REPORT-05` replays local validation summary and ready-to-queue gating as an Android-local UX slice.
 
 Physical Android runtime check for REPORT-04 is passed with status `report04 phone ok`.
+Physical Android runtime check for REPORT-05 is passed with status `report05 phone ok`.
 
 REPORT-05 means:
 - validation summary renders in report draft
