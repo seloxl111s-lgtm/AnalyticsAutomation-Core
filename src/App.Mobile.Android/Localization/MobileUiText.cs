@@ -57,7 +57,7 @@ internal static class MobileUiText
     public const string UploadSelectedMediaRestoredMetadataOnlyStateText =
         "После перезапуска восстановлены только локальные метаданные без живого доступа к файлу.";
     public const string UploadSelectedMediaRestoredMetadataNoteText =
-        "Чтобы снова передать файл в очередь после перезапуска, выберите тот же видеофайл ещё раз.";
+        "После перезапуска сохранены только метаданные. Чтобы восстановить локальный доступ или починить восстановленный черновик очереди, выберите тот же видеофайл ещё раз.";
     public const string UploadClearSelectionButton = "Очистить локальный выбор";
     public const string UploadClearSelectionResultText = "Локально выбранный медиафайл очищен.";
     public const string UploadUnknownContentTypeText = "Неизвестно";
@@ -69,8 +69,7 @@ internal static class MobileUiText
     public const string LocalDuplicatePrecheckNoKnownDuplicateText =
         "Локальная предварительная проверка не нашла дубликатов в текущей очереди. Это не финальная backend-проверка.";
     public const string LocalDuplicatePrecheckLikelyAlreadyQueuedText =
-        "Похоже, выбранное видео уже есть в локальной очереди. Повторная передача заблокирована только локальной " +
-        "предварительной проверкой, это не финальная backend-проверка.";
+        "Похоже, выбранное видео уже есть в локальной очереди. Повторная передача заблокирована только локальной предварительной проверкой, это не финальная backend-проверка.";
     public const string LocalDuplicatePrecheckLocalOnlyNote =
         "Сравнение выполняется только по текущему локальному выбору и draft-элементам очереди в памяти устройства.";
     public const string UploadEnqueueStubButton = "Передать выбранное видео в локальную очередь";
@@ -91,6 +90,9 @@ internal static class MobileUiText
         "Добавьте элемент из раздела «Загрузка», чтобы проверить локальный foundation очереди.";
     public const string QueueRetryButton = "Повторить (заглушка)";
     public const string QueueRemoveButton = "Удалить";
+    public const string QueueRepairButton = "Восстановить локальный доступ к файлу";
+    public const string QueueRepairHintText =
+        "Если этот черновик восстановлен после перезапуска только по метаданным, выберите тот же видеофайл на экране «Загрузка» и запустите локальное восстановление.";
     public const string QueueCreatedAtLabel = "Создано";
     public const string QueueStatusLabel = "Статус";
     public const string QueueLastActionLabel = "Последнее действие";
@@ -104,15 +106,28 @@ internal static class MobileUiText
     public const string QueueMediaDraftRestoredMetadataOnlyText =
         "После перезапуска доступны только локальные метаданные черновика.";
     public const string QueueRestoredMetadataOnlyNoteText =
-        "После перезапуска для реального доступа к файлу потребуется повторный выбор и последующая привязка.";
+        "После перезапуска для реального доступа к файлу потребуется повторный выбор и последующая локальная привязка.";
+    public const string QueueRepairNoCurrentSelectionText =
+        "Сначала выберите или запишите видео. Это только локальная проверка восстановления черновика, а не backend-валидация.";
+    public const string QueueRepairSelectionHasNoLiveHandleText =
+        "У текущего выбранного видео нет живого локального доступа к файлу. Сначала выберите тот же файл заново, чтобы локально восстановить привязку.";
+    public const string QueueRepairNoRepairableDraftText =
+        "Для этого элемента сейчас нет локального медиа-черновика, который можно восстановить.";
+    public const string QueueRepairAlreadyRepairedText =
+        "Локальный доступ к файлу для этого черновика уже восстановлен в текущем запуске.";
+    public const string QueueRepairSelectionDoesNotMatchText =
+        "Текущее выбранное видео не совпадает с восстановленным черновиком очереди. Это только локальная проверка восстановления, а не backend-валидация.";
+    public const string QueueRepairReadyText =
+        "Текущее выбранное видео подходит для локального восстановления доступа к файлу в черновике очереди.";
+    public const string QueueRepairSuccessLastActionText =
+        "Локальный доступ к файлу для черновика восстановлен из текущего выбранного видео.";
 
     public const string NotFoundTitle = "Страница не найдена";
     public const string NotFoundMessage =
         "Запрошенный экран не найден в текущей локальной оболочке.";
 
     public const string PendingSyncItemSummary =
-        "Элемент создан только для локальной проверки очереди. После перезапуска могут сохраниться только метаданные " +
-        "без upload и sync.";
+        "Элемент создан только для локальной проверки очереди. После перезапуска могут сохраниться только метаданные без upload и sync.";
     public const string PendingSyncEnqueuedLastAction =
         "Элемент добавлен в локальную очередь как заглушка.";
     public const string PendingSyncRetriedLastAction =
@@ -122,11 +137,9 @@ internal static class MobileUiText
     public const string PendingSyncNoCurrentSelectionText =
         "Сначала выберите или запишите видео, чтобы передать его в локальную очередь.";
     public const string PendingSyncReselectAfterRestartText =
-        "После перезапуска восстановлены только локальные метаданные выбранного видео. " +
-        "Чтобы снова передать его в очередь, выберите тот же файл ещё раз.";
+        "После перезапуска восстановлены только локальные метаданные выбранного видео. Чтобы снова передать его в очередь, выберите тот же файл ещё раз.";
     public const string PendingSyncMediaDraftSummary =
-        "Элемент очереди содержит только локальный медиа-черновик на устройстве без upload, sync и backend-действий. " +
-        "После перезапуска могут остаться только метаданные.";
+        "Элемент очереди содержит только локальный медиа-черновик на устройстве без upload, sync и backend-действий. После перезапуска могут остаться только метаданные.";
     public const string PendingSyncMediaDraftEnqueuedLastAction =
         "Выбранное видео передано в локальный черновик очереди.";
     public const string PendingSyncRestoredMetadataLastActionText =
@@ -237,6 +250,11 @@ internal static class MobileUiText
     public static string GetPendingSyncMediaDraftHandoffResultText(string fileName)
     {
         return $"Видео «{fileName}» передано в локальный черновик очереди.";
+    }
+
+    public static string GetQueueRepairSuccessText(string fileName)
+    {
+        return $"Для черновика с видео «{fileName}» локальный доступ к файлу восстановлен.";
     }
 
     public static string GetUploadNativePickerSuccessText(string fileName)

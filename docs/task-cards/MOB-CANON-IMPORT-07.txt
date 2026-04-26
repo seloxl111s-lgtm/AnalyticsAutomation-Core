@@ -1,0 +1,85 @@
+Title: MOB-CANON-IMPORT-07 - Local repair/rebind reconciliation
+Coder: 3
+Module: App.Mobile.Android
+Task type: repository reconciliation / local repair-rebind / UI capability / test coverage
+
+Base main SHA at task start:
+- b5d0be7
+
+Coordination log entries reviewed:
+- #95 feat(mobile): restore Android media picker and selected media cache
+- #96 feat(mobile): restore local outbox foundation
+- #97 feat(mobile): connect selected media to local outbox draft
+- #98 feat(mobile): restore local duplicate precheck
+- #99 feat(mobile): restore restart-resilient local snapshots
+
+Handoff/task cards reviewed:
+- docs/handoffs/s1-11-coder3-android-integration.md
+- docs/handoffs/s1-11-backend-integration-note.md
+- docs/handoffs/s1-12-sprint1-quality-gate.md
+- docs/task-cards/MOB-CANON-IMPORT-06.txt
+- docs/task-cards/MOB-CANON-IMPORT-07.txt
+
+Goal
+- Restore only the local repair/rebind seam for metadata-only selected media and queue drafts in the canonical Android mobile foundation, without adding backend integration or expanding scope beyond local mobile behavior.
+
+What changes
+- mobile only
+- local repair/rebind models
+- ILocalMediaDraftRepairService
+- LocalCurrentSelectionDraftRepairService
+- RepairLocalMediaDraftAsync on local outbox service
+- Queue repair button for restored metadata-only drafts
+- Upload note for restored metadata-only selection
+- unit tests for repair service and outbox repair behavior
+
+New or changed contracts
+- shared DTO/contracts unchanged
+
+Migration
+- none
+
+Offline behavior
+- local repair/rebind only for restored metadata-only media and queue drafts
+- no upload
+- no sync
+- no business actions
+- no backend save
+
+Security
+- no auth/authz changes
+- no auth/session/device binding
+
+Observability
+- local repair result text and notes in Upload and Queue
+- build/test/handoff note
+
+Rollback
+- revert this import slice
+
+Definition of done
+- build succeeds
+- unit tests pass
+- restored queue draft can be rebound from the current selected media
+- mismatch is blocked with Russian warning
+- successful repair clears current selected media
+- metadata-only note disappears after successful repair
+- retry/remove still work
+- no backend integration
+- no App.UI.Shared changes
+- shared DTO/contracts unchanged
+
+Out of scope
+- report draft
+- backend integration
+- shared DTO/contracts changes
+- App.UI.Shared changes
+- PreUploadCheck
+- UploadReceipt
+- direct upload runtime
+- lookup/filter/profile UX
+- sync/download flow
+- incident/fraud/worker logic
+- hashes
+- ffprobe
+- final dedupe logic

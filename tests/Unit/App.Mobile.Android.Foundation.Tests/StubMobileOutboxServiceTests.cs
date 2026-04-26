@@ -3,14 +3,13 @@ namespace App.Mobile.Android.Foundation.Tests;
 public sealed class StubMobileOutboxServiceTests
 {
     [Fact]
-    public async Task EnqueueCurrentSelectionAsyncWithoutCurrentSelectionReturnsAppliedFalse()
+    public async Task EnqueueCurrentSelectionAsync_WithoutCurrentSelection_ReturnsAppliedFalse()
     {
         var storageDirectory = CreateTempDirectory();
 
         try
         {
             var context = CreateService(storageDirectory);
-
             var result = await context.Service.EnqueueCurrentSelectionAsync();
 
             Assert.False(result.Applied);
@@ -23,7 +22,34 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task EnqueueCurrentSelectionAsyncWithCachedSelectionCreatesOneQueuedItem()
+    public async Task EnqueueCurrentSelectionAsync_DuplicateCurrentSelection_ReturnsAppliedFalseAndKeepsCurrentSelection()
+    {
+        var storageDirectory = CreateTempDirectory();
+
+        try
+        {
+            var context = CreateService(storageDirectory);
+            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
+            await context.Service.EnqueueCurrentSelectionAsync();
+            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
+
+            var result = await context.Service.EnqueueCurrentSelectionAsync();
+            var items = await context.Service.GetItemsAsync();
+            var currentSelection = await context.SelectedMediaStore.GetCurrentAsync();
+
+            Assert.False(result.Applied);
+            Assert.Single(items);
+            Assert.NotNull(currentSelection);
+            Assert.Equal("duplicate-cache-key", currentSelection!.CacheKey);
+        }
+        finally
+        {
+            DeleteTempDirectory(storageDirectory);
+        }
+    }
+
+    [Fact]
+    public async Task EnqueueCurrentSelectionAsync_WithCachedSelection_CreatesOneQueuedItemWithLocalMediaDraft()
     {
         var storageDirectory = CreateTempDirectory();
 
@@ -40,7 +66,9 @@ public sealed class StubMobileOutboxServiceTests
             Assert.Single(items);
             Assert.Equal(global::App.Mobile.Android.Outbox.PendingSyncItemStatus.Queued, items[0].Status);
             Assert.NotNull(items[0].LocalMediaDraft);
-            Assert.Equal("sample.mp4", items[0].LocalMediaDraft!.FileName);
+            var localMediaDraft = items[0].LocalMediaDraft!;
+            Assert.Equal("sample.mp4", localMediaDraft.FileName);
+            Assert.True(localMediaDraft.HasLocalReadHandle);
             Assert.Null(currentSelection);
         }
         finally
@@ -50,30 +78,7 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task PersistedQueueItemsLoadInNewServiceInstance()
-    {
-        var storageDirectory = CreateTempDirectory();
-
-        try
-        {
-            var firstContext = CreateService(storageDirectory);
-            await CacheCurrentSelectionAsync(firstContext.SelectedMediaStore);
-            await firstContext.Service.EnqueueCurrentSelectionAsync();
-
-            var secondContext = CreateService(storageDirectory);
-            var items = await secondContext.Service.GetItemsAsync();
-
-            Assert.Single(items);
-            Assert.NotNull(items[0].LocalMediaDraft);
-        }
-        finally
-        {
-            DeleteTempDirectory(storageDirectory);
-        }
-    }
-
-    [Fact]
-    public async Task LoadedLocalMediaDraftHasHasLocalReadHandleFalse()
+    public async Task PersistedQueueItems_LoadInNewServiceInstanceWithMetadataOnlyDraft()
     {
         var storageDirectory = CreateTempDirectory();
 
@@ -89,6 +94,9 @@ public sealed class StubMobileOutboxServiceTests
             Assert.Single(items);
             Assert.NotNull(items[0].LocalMediaDraft);
             Assert.False(items[0].LocalMediaDraft!.HasLocalReadHandle);
+            Assert.Equal(
+                global::App.Mobile.Android.Localization.MobileUiText.PendingSyncRestoredMetadataLastActionText,
+                items[0].LastActionText);
         }
         finally
         {
@@ -97,23 +105,19 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task EnqueueCurrentSelectionAsyncWithRestoredMetadataOnlyCurrentSelectionReturnsAppliedFalse()
+    public async Task EnqueueCurrentSelectionAsync_WithRestoredMetadataOnlySelection_ReturnsAppliedFalse()
     {
         var storageDirectory = CreateTempDirectory();
 
         try
         {
-            var snapshotStore = new global::App.Mobile.Android.Services.Local.FileMobileSelectedMediaSnapshotStore(
-                GetSelectedMediaStorageDirectory(storageDirectory));
-            await snapshotStore.SaveAsync(CreateDescriptor("restored-cache-key"));
-
+            await SeedSelectedMediaSnapshotOnlyAsync(storageDirectory);
             var context = CreateService(storageDirectory);
             var result = await context.Service.EnqueueCurrentSelectionAsync();
             var currentSelection = await context.SelectedMediaStore.GetCurrentAsync();
             var items = await context.Service.GetItemsAsync();
 
             Assert.False(result.Applied);
-            Assert.Null(result.Item);
             Assert.NotNull(currentSelection);
             Assert.False(currentSelection!.HasLocalReadHandle);
             Assert.Empty(items);
@@ -125,21 +129,21 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task EnqueueCurrentSelectionAsyncDuplicateCurrentSelectionReturnsAppliedFalse()
+    public async Task RepairLocalMediaDraftAsync_WithoutCurrentSelection_ReturnsAppliedFalse()
     {
         var storageDirectory = CreateTempDirectory();
 
         try
         {
+            await SeedRestoredDraftMetadataAsync(storageDirectory);
             var context = CreateService(storageDirectory);
-            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
-            await context.Service.EnqueueCurrentSelectionAsync();
-            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
+            var itemId = (await context.Service.GetItemsAsync())[0].ItemId;
 
-            var result = await context.Service.EnqueueCurrentSelectionAsync();
+            var result = await context.Service.RepairLocalMediaDraftAsync(itemId);
+            var items = await context.Service.GetItemsAsync();
 
             Assert.False(result.Applied);
-            Assert.Null(result.Item);
+            Assert.False(items[0].LocalMediaDraft!.HasLocalReadHandle);
         }
         finally
         {
@@ -148,22 +152,105 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task EnqueueCurrentSelectionAsyncDuplicateRejectionDoesNotClearCurrentSelectedMedia()
+    public async Task RepairLocalMediaDraftAsync_WithRestoredMetadataOnlyCurrentSelection_ReturnsAppliedFalse()
     {
         var storageDirectory = CreateTempDirectory();
 
         try
         {
+            await SeedSelectedMediaSnapshotOnlyAsync(storageDirectory);
+            await SeedRestoredDraftMetadataAsync(storageDirectory);
             var context = CreateService(storageDirectory);
-            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
-            await context.Service.EnqueueCurrentSelectionAsync();
-            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
+            var itemId = (await context.Service.GetItemsAsync())[0].ItemId;
 
-            await context.Service.EnqueueCurrentSelectionAsync();
+            var result = await context.Service.RepairLocalMediaDraftAsync(itemId);
+            var items = await context.Service.GetItemsAsync();
+
+            Assert.False(result.Applied);
+            Assert.False(items[0].LocalMediaDraft!.HasLocalReadHandle);
+        }
+        finally
+        {
+            DeleteTempDirectory(storageDirectory);
+        }
+    }
+
+    [Fact]
+    public async Task RepairLocalMediaDraftAsync_WithMatchingLiveCurrentSelection_ReturnsAppliedTrueAndClearsCurrentSelection()
+    {
+        var storageDirectory = CreateTempDirectory();
+
+        try
+        {
+            await SeedRestoredDraftMetadataAsync(storageDirectory);
+            var context = CreateService(storageDirectory);
+            var itemId = (await context.Service.GetItemsAsync())[0].ItemId;
+            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "restored-cache-key");
+
+            var result = await context.Service.RepairLocalMediaDraftAsync(itemId);
+            var items = await context.Service.GetItemsAsync();
             var currentSelection = await context.SelectedMediaStore.GetCurrentAsync();
 
+            Assert.True(result.Applied);
+            Assert.Single(items);
+            Assert.True(items[0].LocalMediaDraft!.HasLocalReadHandle);
+            Assert.Equal(
+                global::App.Mobile.Android.Localization.MobileUiText.QueueRepairSuccessLastActionText,
+                items[0].LastActionText);
+            Assert.Null(currentSelection);
+        }
+        finally
+        {
+            DeleteTempDirectory(storageDirectory);
+        }
+    }
+
+    [Fact]
+    public async Task SuccessfulRepair_SetsItemLocalMediaDraftHasLocalReadHandleTrue()
+    {
+        var storageDirectory = CreateTempDirectory();
+
+        try
+        {
+            await SeedRestoredDraftMetadataAsync(storageDirectory);
+            var context = CreateService(storageDirectory);
+            var itemId = (await context.Service.GetItemsAsync())[0].ItemId;
+            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "restored-cache-key");
+
+            await context.Service.RepairLocalMediaDraftAsync(itemId);
+            var items = await context.Service.GetItemsAsync();
+
+            Assert.True(items[0].LocalMediaDraft!.HasLocalReadHandle);
+        }
+        finally
+        {
+            DeleteTempDirectory(storageDirectory);
+        }
+    }
+
+    [Fact]
+    public async Task RepairLocalMediaDraftAsync_WithMismatchedSelection_KeepsQueueItemMetadataOnly()
+    {
+        var storageDirectory = CreateTempDirectory();
+
+        try
+        {
+            await SeedRestoredDraftMetadataAsync(storageDirectory);
+            var context = CreateService(storageDirectory);
+            var itemId = (await context.Service.GetItemsAsync())[0].ItemId;
+            await CacheCurrentSelectionAsync(
+                context.SelectedMediaStore,
+                cacheKey: "different-cache-key",
+                fileName: "different.mp4",
+                contentType: "video/mp4");
+
+            var result = await context.Service.RepairLocalMediaDraftAsync(itemId);
+            var items = await context.Service.GetItemsAsync();
+            var currentSelection = await context.SelectedMediaStore.GetCurrentAsync();
+
+            Assert.False(result.Applied);
+            Assert.False(items[0].LocalMediaDraft!.HasLocalReadHandle);
             Assert.NotNull(currentSelection);
-            Assert.Equal("duplicate-cache-key", currentSelection!.CacheKey);
         }
         finally
         {
@@ -172,72 +259,7 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task EnqueueCurrentSelectionAsyncDuplicateRejectionDoesNotAddSecondQueueItem()
-    {
-        var storageDirectory = CreateTempDirectory();
-
-        try
-        {
-            var context = CreateService(storageDirectory);
-            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
-            await context.Service.EnqueueCurrentSelectionAsync();
-            await CacheCurrentSelectionAsync(context.SelectedMediaStore, cacheKey: "duplicate-cache-key");
-
-            await context.Service.EnqueueCurrentSelectionAsync();
-            var items = await context.Service.GetItemsAsync();
-
-            Assert.Single(items);
-        }
-        finally
-        {
-            DeleteTempDirectory(storageDirectory);
-        }
-    }
-
-    [Fact]
-    public async Task EnqueueStubItemAsyncStillWorksForCompatibility()
-    {
-        var storageDirectory = CreateTempDirectory();
-
-        try
-        {
-            var context = CreateService(storageDirectory);
-            var result = await context.Service.EnqueueStubItemAsync();
-            var items = await context.Service.GetItemsAsync();
-
-            Assert.True(result.Applied);
-            Assert.Single(items);
-            Assert.Null(items[0].LocalMediaDraft);
-        }
-        finally
-        {
-            DeleteTempDirectory(storageDirectory);
-        }
-    }
-
-    [Fact]
-    public async Task EnqueueStubItemAsyncCreatesOneItemWithQueuedStatus()
-    {
-        var storageDirectory = CreateTempDirectory();
-
-        try
-        {
-            var context = CreateService(storageDirectory);
-            var result = await context.Service.EnqueueStubItemAsync();
-            var items = await context.Service.GetItemsAsync();
-
-            Assert.True(result.Applied);
-            Assert.Single(items);
-            Assert.Equal(global::App.Mobile.Android.Outbox.PendingSyncItemStatus.Queued, items[0].Status);
-        }
-        finally
-        {
-            DeleteTempDirectory(storageDirectory);
-        }
-    }
-
-    [Fact]
-    public async Task RetryAsyncChangesStatusToRetryRequestedAndUpdatesLastActionText()
+    public async Task RetryAsync_StillUpdatesStatusAndLastActionText()
     {
         var storageDirectory = CreateTempDirectory();
 
@@ -262,7 +284,7 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task RemoveAsyncRemovesTheItem()
+    public async Task RemoveAsync_StillRemovesTheItem()
     {
         var storageDirectory = CreateTempDirectory();
 
@@ -285,7 +307,7 @@ public sealed class StubMobileOutboxServiceTests
     }
 
     [Fact]
-    public async Task RemoveAsyncPersistsDeletion()
+    public async Task RemoveAsync_PersistsDeletion()
     {
         var storageDirectory = CreateTempDirectory();
 
@@ -294,10 +316,12 @@ public sealed class StubMobileOutboxServiceTests
             var firstContext = CreateService(storageDirectory);
             await CacheCurrentSelectionAsync(firstContext.SelectedMediaStore);
             var enqueueResult = await firstContext.Service.EnqueueCurrentSelectionAsync();
-            await firstContext.Service.RemoveAsync(enqueueResult.Item!.ItemId);
 
             var secondContext = CreateService(storageDirectory);
-            var items = await secondContext.Service.GetItemsAsync();
+            await secondContext.Service.RemoveAsync(enqueueResult.Item!.ItemId);
+
+            var thirdContext = CreateService(storageDirectory);
+            var items = await thirdContext.Service.GetItemsAsync();
 
             Assert.Empty(items);
         }
@@ -307,57 +331,20 @@ public sealed class StubMobileOutboxServiceTests
         }
     }
 
-    [Fact]
-    public async Task RetryAsyncForUnknownItemReturnsAppliedFalse()
-    {
-        var storageDirectory = CreateTempDirectory();
-
-        try
-        {
-            var context = CreateService(storageDirectory);
-            var result = await context.Service.RetryAsync("missing-item");
-
-            Assert.False(result.Applied);
-            Assert.Null(result.Item);
-        }
-        finally
-        {
-            DeleteTempDirectory(storageDirectory);
-        }
-    }
-
-    [Fact]
-    public async Task RemoveAsyncForUnknownItemReturnsAppliedFalse()
-    {
-        var storageDirectory = CreateTempDirectory();
-
-        try
-        {
-            var context = CreateService(storageDirectory);
-            var result = await context.Service.RemoveAsync("missing-item");
-
-            Assert.False(result.Applied);
-            Assert.Null(result.Item);
-        }
-        finally
-        {
-            DeleteTempDirectory(storageDirectory);
-        }
-    }
-
     private static ServiceContext CreateService(string storageDirectory)
     {
-        var selectedMediaSnapshotStore = new global::App.Mobile.Android.Services.Local.FileMobileSelectedMediaSnapshotStore(
+        var selectedSnapshotStore = new global::App.Mobile.Android.Services.Local.FileMobileSelectedMediaSnapshotStore(
             GetSelectedMediaStorageDirectory(storageDirectory));
         var outboxSnapshotStore = new global::App.Mobile.Android.Services.Local.FileMobileOutboxSnapshotStore(
             GetOutboxStorageDirectory(storageDirectory));
-        var selectedMediaStore = new global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore(
-            selectedMediaSnapshotStore);
+        var selectedMediaStore = new global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore(selectedSnapshotStore);
         var duplicatePrecheckService = new global::App.Mobile.Android.Services.Local.LocalOutboxDuplicatePrecheckService();
+        var repairService = new global::App.Mobile.Android.Services.Local.LocalCurrentSelectionDraftRepairService();
 
         return new ServiceContext(
             new global::App.Mobile.Android.Services.Stubs.StubMobileOutboxService(
                 duplicatePrecheckService,
+                repairService,
                 selectedMediaStore,
                 outboxSnapshotStore,
                 global::Microsoft.Extensions.Logging.Abstractions.NullLogger<
@@ -365,30 +352,64 @@ public sealed class StubMobileOutboxServiceTests
             selectedMediaStore);
     }
 
+    private static async Task SeedRestoredDraftMetadataAsync(string storageDirectory)
+    {
+        var outboxSnapshotStore = new global::App.Mobile.Android.Services.Local.FileMobileOutboxSnapshotStore(
+            GetOutboxStorageDirectory(storageDirectory));
+        await outboxSnapshotStore.SaveAsync(
+        [
+            new global::App.Mobile.Android.Outbox.PendingSyncItem(
+                ItemId: "pending-sync-1",
+                CreatedAtUtc: new DateTimeOffset(2026, 4, 18, 9, 0, 0, TimeSpan.Zero),
+                Title: "Draft 1",
+                SummaryText: "Local draft",
+                Status: global::App.Mobile.Android.Outbox.PendingSyncItemStatus.Queued,
+                LastActionText: global::App.Mobile.Android.Localization.MobileUiText.PendingSyncRestoredMetadataLastActionText,
+                LocalMediaDraft: new global::App.Mobile.Android.Outbox.PendingSyncItemLocalMediaDraft(
+                    CacheKey: "restored-cache-key",
+                    Source: global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo,
+                    FileName: "sample.mp4",
+                    ContentType: "video/mp4",
+                    SelectedAtUtc: new DateTimeOffset(2026, 4, 18, 8, 55, 0, TimeSpan.Zero),
+                    HasLocalReadHandle: false))
+        ]);
+    }
+
+    private static async Task SeedSelectedMediaSnapshotOnlyAsync(string storageDirectory)
+    {
+        var selectedSnapshotStore = new global::App.Mobile.Android.Services.Local.FileMobileSelectedMediaSnapshotStore(
+            GetSelectedMediaStorageDirectory(storageDirectory));
+        await selectedSnapshotStore.SaveAsync(
+            new global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor(
+                CacheKey: "restored-cache-key",
+                Source: global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo,
+                FileName: "sample.mp4",
+                ContentType: "video/mp4",
+                SelectedAtUtc: new DateTimeOffset(2026, 4, 18, 8, 55, 0, TimeSpan.Zero),
+                HasLocalReadHandle: false));
+    }
+
     private static Task CacheCurrentSelectionAsync(
         global::App.Mobile.Android.Services.Local.InMemoryMobileSelectedMediaStore selectedMediaStore,
-        string cacheKey = "selected-media-cache-key")
+        string cacheKey = "selected-media-cache-key",
+        string fileName = "sample.mp4",
+        string? contentType = "video/mp4")
     {
         return selectedMediaStore.CacheAsync(
-            CreateDescriptor(cacheKey),
+            new global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor(
+                CacheKey: cacheKey,
+                Source: global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo,
+                FileName: fileName,
+                ContentType: contentType,
+                SelectedAtUtc: new DateTimeOffset(2026, 4, 16, 12, 0, 0, TimeSpan.Zero),
+                HasLocalReadHandle: true),
             () => Task.FromResult<global::System.IO.Stream>(
                 new global::System.IO.MemoryStream([1, 2, 3, 4])));
     }
 
-    private static global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor CreateDescriptor(string cacheKey)
-    {
-        return new global::App.Mobile.Android.Media.LocalSelectedMediaDescriptor(
-            CacheKey: cacheKey,
-            Source: global::App.Mobile.Android.Media.MobileMediaSource.GalleryVideo,
-            FileName: "sample.mp4",
-            ContentType: "video/mp4",
-            SelectedAtUtc: new DateTimeOffset(2026, 4, 21, 7, 0, 0, TimeSpan.Zero),
-            HasLocalReadHandle: true);
-    }
-
     private static string CreateTempDirectory()
     {
-        var path = Path.Combine(Path.GetTempPath(), $"androida-mobile-outbox-{Guid.NewGuid():N}");
+        var path = Path.Combine(Path.GetTempPath(), $"androida-outbox-service-{Guid.NewGuid():N}");
         Directory.CreateDirectory(path);
         return path;
     }
