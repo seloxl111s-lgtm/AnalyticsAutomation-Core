@@ -92,15 +92,15 @@
 
 ## Physical Android runtime check
 - Result: passed.
-- Runtime status: import07 phone ok.
-- Restored queue draft can be rebound from current selected media.
-- Mismatch is blocked with Russian warning.
-- Successful repair clears current selected media.
-- Metadata-only note disappears after successful repair.
-- Retry/remove still work.
+- Runtime status: backend01 phone ok.
+- Upload page shows unresolved businessObjectKey blocker.
+- Local intent can be saved and cleared.
+- PreUploadCheck readiness check is blocked.
+- No fake businessObjectKey is shown.
+- Media/outbox foundation still works.
 
 ## Manual steps pending
-- none for IMPORT-07.
+- none for BACKEND-01.
 
 ## Waiting for coder 1
 - No immediate blocker for this import slice.
@@ -110,5 +110,5 @@
 - No App.UI.Shared changes are included in this PR slice.
 
 ## Next code step
-- Blocked pending owner/coder 1 answer for the approved Android `businessObjectKey` source.
+- Blocked pending owner/coder 1 answer for the approved Android `businessObjectKey` source or next approved local UX replay.
 - Do not start report, UX, profile, backend, or worker work in this branch.
