@@ -66,8 +66,8 @@
 - `git diff --check`
 
 ## Physical Android runtime check
-- Result: passed.
-- Runtime status: report05 phone ok.
+- Result: runtime localization fix pending.
+- Runtime status: report05 ru re-check pending.
 - Confirmed:
   - validation summary renders in report draft.
   - missing required fields are shown in Russian.
@@ -78,9 +78,16 @@
   - media attachments still work.
   - no fake `businessObjectKey` is shown.
   - production `PreUploadCheck` remains blocked.
+- Runtime issue found after PR #112 opened:
+  - physical Android check found Russian localization mojibake in visible UI.
+  - physical Android check found user-facing English terms in report validation/media/field text.
+- Fix scope:
+  - ReportDraft visible text and `MobileUiText` Russian localization only.
+  - User-facing backend/upload/save/validation wording replaced with Russian wording where applicable.
+  - Technical identifiers remain unchanged where needed.
 
 ## Manual steps pending
-- none for REPORT-05.
+- physical Android re-check for Russian localization.
 
 ## Next code step
 - REPORT-06 local report draft snapshot persistence, or wait for backend concrete `businessObjectKey` source.

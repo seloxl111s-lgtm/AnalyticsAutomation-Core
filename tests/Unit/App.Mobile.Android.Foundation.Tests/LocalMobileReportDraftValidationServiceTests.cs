@@ -11,7 +11,7 @@ public sealed class LocalMobileReportDraftValidationServiceTests
 
         Assert.False(result.IsValidForLocalQueue);
         Assert.Single(result.Issues);
-        Assert.Contains("backend validation", result.SummaryText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("серверную проверку", result.SummaryText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public sealed class LocalMobileReportDraftValidationServiceTests
         var result = service.ValidateForLocalQueue(CreateDraft(fillRequiredFields: true, includeVideoAttachment: true));
 
         Assert.Contains("локаль", result.SummaryText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("backend validation", result.SummaryText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("серверную проверку", result.SummaryText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("успешно создан", result.SummaryText, StringComparison.OrdinalIgnoreCase);
     }
 
