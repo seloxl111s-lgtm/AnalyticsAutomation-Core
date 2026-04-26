@@ -772,6 +772,11 @@ else
 
     private static string GetFieldDisplayText(global::App.Mobile.Android.Reports.MobileReportDraftFieldValue field)
     {
+        if (field.IsPlaceholder)
+        {
+            return MobileUiText.ReportFieldPlaceholderText;
+        }
+
         if (field.FieldKind == global::App.Mobile.Android.Lookup.MobileLookupFieldKind.Toggle)
         {
             if (string.Equals(field.ValueText, MobileUiText.ReportDraftToggleYesText, StringComparison.OrdinalIgnoreCase))
@@ -790,9 +795,7 @@ else
             return field.ValueText;
         }
 
-        return field.IsPlaceholder
-            ? MobileUiText.ReportFieldPlaceholderText
-            : "вЂ”";
+        return "Нет значения";
     }
 
     private string GetValidationIssueClass(global::App.Mobile.Android.Reports.Validation.MobileReportDraftValidationIssue issue)
