@@ -54,7 +54,20 @@ What changes:
 - git diff --check
 
 ## Manual steps pending
-- physical Android full-restart check for restored report draft fields, restored attachment metadata, validation, and local queue action.
+- none for REPORT-06.
+
+## Physical Android runtime check
+- Result: passed.
+- Runtime status: report06 phone ok.
+- Confirmed:
+  - local drafts survive full app restart;
+  - edited fields survive full app restart;
+  - attachment metadata survives full app restart;
+  - restored attachments are metadata-only;
+  - validation still works after restore;
+  - local report queue action still works after restore;
+  - no fake businessObjectKey is shown;
+  - production PreUploadCheck remains blocked.
 
 ## Next code step
 - REPORT-07 create-from-last, or wait for backend concrete businessObjectKey source.
