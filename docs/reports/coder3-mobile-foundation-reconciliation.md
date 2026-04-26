@@ -19,6 +19,16 @@ The canonical repository contains the complete IMPORT-01..07 Android media/outbo
 ## Current local UX slice
 `MOB-CANON-REPORT-00-03` replays the local report-first baseline as an Android-local UX slice.
 
+Physical Android runtime check is passed for REPORT-00-03:
+- `Полеты` route/list works.
+- create FPV draft works.
+- report draft opens.
+- media can be selected/captured inside draft.
+- duplicate same-video attachment is blocked.
+- draft can be placed into local queue.
+- no fake `businessObjectKey` is shown.
+- production `PreUploadCheck` remains blocked.
+
 Report-first baseline means:
 - local FPV report draft shell
 - report route/list and create draft action

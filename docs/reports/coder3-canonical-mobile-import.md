@@ -64,8 +64,10 @@
 - `dotnet format whitespace .\AnalyticsAutomation-Core.sln --verify-no-changes --no-restore`
 - `git diff --check`
 
-## Manual steps pending
-- Physical Android check for local report baseline:
+## Physical Android runtime check
+- Result: passed.
+- Runtime status: report-baseline phone ok.
+- Confirmed:
   - `Полеты` route/list works.
   - create FPV draft works.
   - report draft opens.
@@ -74,6 +76,9 @@
   - draft can be placed into local queue.
   - no fake `businessObjectKey` is shown.
   - production `PreUploadCheck` remains blocked.
+
+## Manual steps pending
+- none for REPORT-00-03.
 
 ## Next code step
 - Owner decision dependent after this baseline:
