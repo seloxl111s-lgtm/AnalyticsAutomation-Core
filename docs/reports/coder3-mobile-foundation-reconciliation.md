@@ -20,6 +20,8 @@ The canonical repository contains the complete IMPORT-01..07 Android media/outbo
 ## Current local UX slice
 `MOB-CANON-REPORT-04` replays local report field editing and selector prototype as an Android-local UX slice.
 
+Physical Android runtime check for REPORT-04 is passed with status `report04 phone ok`.
+
 REPORT-04 means:
 - report draft fields can be edited locally
 - selector fields can open local stub options

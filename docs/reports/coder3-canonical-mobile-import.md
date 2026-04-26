@@ -63,9 +63,9 @@
 - `git diff --check`
 
 ## Physical Android runtime check
-- Result: pending.
-- Runtime status: not_done for REPORT-04.
-- Pending checks:
+- Result: passed.
+- Runtime status: report04 phone ok.
+- Confirmed:
   - report draft fields render by sections.
   - text/number/toggle fields can be edited locally.
   - selector fields open local stub selector.
@@ -76,7 +76,7 @@
   - production `PreUploadCheck` remains blocked.
 
 ## Manual steps pending
-- physical Android check for REPORT-04 field editing and selector behavior.
+- none for REPORT-04.
 
 ## Next code step
 - REPORT-05 local validation summary, or wait for backend concrete `businessObjectKey` source.
