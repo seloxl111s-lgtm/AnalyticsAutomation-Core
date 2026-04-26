@@ -1,0 +1,76 @@
+Title:
+MOB-CANON-BACKEND-00 - Android backend integration readiness checkpoint
+
+Coder:
+3
+
+Module:
+App.Mobile.Android / backend integration planning / docs
+
+Task type:
+documentation / integration readiness / PR strategy
+
+Goal:
+Confirm the Android media/outbox foundation is now in main, map backend integration readiness, identify blockers for businessObjectKey/create-report, and choose the next safe Android PR direction.
+
+Base main SHA:
+e4dd243
+
+Coordination log entries reviewed:
+- GitHub issue #89: PR #96 manual coordination replay merged as 1a63bf2.
+- GitHub issue #89: PR #97 manual selected-media handoff replay merged as fb4d589.
+- GitHub issue #89: PR #98 manual duplicate-precheck replay merged as 6b22b69.
+- GitHub issue #89: PR #99 manual restart-snapshot replay merged as b5d0be7.
+- GitHub issue #89: PR #101 desktop client form architecture update merged as 9c623fb.
+- GitHub issue #89: PR #102 stale S2-18 Web prompt replaced with desktop-client prompt as 921c9c2.
+- GitHub issue #89: PR #103 desktop UI technology decision task merged as 787805f.
+- GitHub issue #89: PR #104 desktop UI technology owner decision merged as f22a4b8.
+
+Handoff/task cards reviewed:
+- docs/handoffs/s1-11-coder3-android-integration.md
+- docs/handoffs/s1-11-backend-integration-note.md
+- docs/handoffs/s1-12-sprint1-quality-gate.md
+- docs/task-cards/MOB-CANON-IMPORT-01.txt
+- docs/task-cards/MOB-CANON-IMPORT-02.txt
+- docs/task-cards/MOB-CANON-IMPORT-03.txt
+- docs/task-cards/MOB-CANON-IMPORT-04.txt
+- docs/task-cards/MOB-CANON-IMPORT-05.txt
+- docs/task-cards/MOB-CANON-IMPORT-06.txt
+- docs/task-cards/MOB-CANON-IMPORT-07.txt
+- docs/task-cards/desktop-client-form-architecture-update.txt
+- docs/handoffs/S2_18_DESKTOP_CLIENT_UPLOAD_CONTROL_PLANE_PROMPT.md
+
+What changes:
+- docs only
+- Android backend readiness report
+- no runtime code
+
+New or changed contracts:
+- shared DTO/contracts unchanged
+
+Migration:
+- none
+
+Feature flags:
+- none
+
+Offline behavior:
+- documentation only
+- existing local outbox/offline foundation unchanged
+
+Security:
+- no secrets
+- no tokens
+- no auth/session code
+- no backend calls
+
+Rollback:
+- revert this docs-only PR
+
+Definition of done:
+- Android IMPORT-01..07 main status documented
+- backend endpoint readiness mapped
+- businessObjectKey/create-report gap documented
+- report-first local UX vs backend integration decision documented
+- no source changes
+- no shared contract changes

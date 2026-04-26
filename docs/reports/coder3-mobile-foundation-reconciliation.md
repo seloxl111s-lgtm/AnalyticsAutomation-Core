@@ -4,7 +4,7 @@
 Track the controlled mobile foundation replay into the canonical repository without importing broad local-only work.
 
 ## Canonical App.Mobile.Android current state
-The canonical repository contains the first six merged mobile foundation slices and the current PR-ready IMPORT-07 replay:
+The canonical repository contains the complete IMPORT-01..07 Android media/outbox foundation chain in `main`:
 - `App.Mobile.Android.csproj` targets `net10.0-android`.
 - `App.Mobile.Android` references `App.UI.Shared` as already present in main.
 - Shell, navigation, Russian visible baseline, and local shell-state stubs are present from MOB-CANON-IMPORT-01 / PR #67.
@@ -14,19 +14,15 @@ The canonical repository contains the first six merged mobile foundation slices 
 - Selected-media to outbox draft handoff and media-linked queue details are present from MOB-CANON-IMPORT-04 / PR #97.
 - Local duplicate-precheck and duplicate-aware handoff behavior are present from MOB-CANON-IMPORT-05 / PR #98.
 - Restart-resilience JSON metadata snapshots are present from MOB-CANON-IMPORT-06 / PR #99.
-- `App.UI.Shared` is intentionally unchanged by this IMPORT-07 slice.
+- Local repair/rebind is present from MOB-CANON-IMPORT-07 / PR #100.
+- `App.UI.Shared` was intentionally unchanged by IMPORT-02..07.
 
-## Current PR-ready slice
-`MOB-CANON-IMPORT-07` is replayed from fresh `main` at `b5d0be7`.
+## Current readiness checkpoint
+`MOB-CANON-BACKEND-00` is a docs-only readiness checkpoint from fresh `main` at `e4dd243`.
 
-This slice restores only:
-- Local repair/rebind models.
-- `ILocalMediaDraftRepairService`.
-- `LocalCurrentSelectionDraftRepairService`.
-- `RepairLocalMediaDraftAsync` on local outbox service.
-- Queue repair button for restored metadata-only drafts.
-- Upload note for restored metadata-only selection.
-- Unit tests for repair service and outbox repair behavior.
+Android media/outbox foundation reconciliation is complete in main through IMPORT-07.
+Report/UX/backend work is not yet replayed from old stacked work.
+The next decision is backend adapter foundation versus local report UX replay.
 
 ## Explicitly deferred
 - report draft shell
@@ -60,18 +56,16 @@ This slice restores only:
 | selected media to outbox handoff | yes | no | no | Present from PR #97 |
 | local duplicate-precheck | yes | no | no | Present from PR #98 |
 | restart-resilience JSON metadata snapshots | yes | no | no | Present from PR #99 |
-| local repair/rebind | no | yes | no | Current PR-ready slice |
+| local repair/rebind | yes | no | no | Present from PR #100 |
 | report/UX/backend integration | no | no | yes | Requires explicit coordination decision |
-| mobile foundation unit tests | partial | yes | later expansion possible | Adds local repair/rebind coverage |
+| mobile foundation unit tests | yes | no | later expansion possible | Foundation coverage merged through IMPORT-07 |
 
 ## Recommended reconciliation strategy
-Continue with small PR-ready import slices from fresh `main`.
+Continue with small PR-ready slices from fresh `main`, but choose the next direction explicitly.
 
-The current branch is only for validation of MOB-CANON-IMPORT-07:
-- run App.Mobile.Android foundation unit tests
-- run Android build
-- run whitespace format check
-- physical Android repair/rebind check passed
+Backend adapter foundation should wait for the approved Android source of `businessObjectKey` / report draft / business object binding before any `PreUploadCheck` runtime.
+
+Local report UX replay remains possible only as local/non-production context if the owner accepts that it does not provide backend save, `businessObjectKey`, production reports engine, `PreUploadCheck`, or `UploadReceipt`.
 
 Do not start report, UX, profile, backend/S1 integration, incident creation, fraud, or worker logic in this branch.
 
