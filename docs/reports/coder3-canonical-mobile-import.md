@@ -70,6 +70,18 @@
 - `/upload` remains available as a service/debug route, but it is not a primary bottom tab.
 - Production `PreUploadCheck` remains blocked and no fake `businessObjectKey` is introduced.
 
+## REPORT-00-03-R1 layout runtime check
+- Result: passed.
+- Runtime status: report-baseline layout ok.
+- Confirmed:
+  - bottom nav no longer covers content.
+  - primary tabs are `РџРѕР»РµС‚С‹` / `РћС‡РµСЂРµРґСЊ` / `РџСЂРѕС„РёР»СЊ`.
+  - Upload is not primary bottom tab.
+  - `/upload` remains available as service/debug route.
+  - report baseline flow still works.
+  - no fake `businessObjectKey` is shown.
+  - production `PreUploadCheck` remains blocked.
+
 ## Physical Android runtime check
 - Result: passed.
 - Runtime status: report-baseline phone ok.
@@ -84,7 +96,7 @@
   - production `PreUploadCheck` remains blocked.
 
 ## Manual steps pending
-- physical Android re-check for REPORT-00-03-R1 bottom nav/content scroll.
+- none for REPORT-00-03-R1.
 
 ## Next code step
 - Owner decision dependent after this baseline:
