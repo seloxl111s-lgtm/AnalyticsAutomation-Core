@@ -171,19 +171,19 @@ internal static class MobileUiText
         "Сравнение выполняется только по текущему локальному выбору и draft-элементам очереди в памяти устройства.";
     public const string BusinessObjectBindingCardTitle = "Привязка бизнес-объекта для серверной предварительной проверки";
     public const string BusinessObjectBindingStateLabel = "Статус";
-    public const string BusinessObjectBindingUnresolvedStateText = "Не разрешено: approved businessObjectKey отсутствует";
+    public const string BusinessObjectBindingUnresolvedStateText = "Не разрешено: утвержденный businessObjectKey отсутствует";
     public const string BusinessObjectBindingUnresolvedWarning =
         "утвержденный источник businessObjectKey еще не описан; серверная предварительная проверка не может продолжаться как рабочий сценарий";
     public const string BusinessObjectBindingSourceDescription =
         "Android хранит только локальное намерение. Оно не является businessObjectKey и не отправляется на сервер.";
-    public const string BusinessObjectBindingLocalIntentTitleLabel = "Локальный intent";
+    public const string BusinessObjectBindingLocalIntentTitleLabel = "Локальное намерение";
     public const string BusinessObjectBindingLocalIntentNoteLabel = "Локальная заметка";
-    public const string BusinessObjectBindingDefaultLocalIntentTitle = "Локальный черновик без approved businessObjectKey";
-    public const string BusinessObjectBindingSaveLocalIntentButton = "Сохранить локальный intent";
-    public const string BusinessObjectBindingClearLocalIntentButton = "Очистить локальный intent";
+    public const string BusinessObjectBindingDefaultLocalIntentTitle = "Локальный черновик без утвержденного businessObjectKey";
+    public const string BusinessObjectBindingSaveLocalIntentButton = "Сохранить локальное намерение";
+    public const string BusinessObjectBindingClearLocalIntentButton = "Очистить локальное намерение";
     public const string BusinessObjectBindingCheckReadinessButton = "Проверить готовность серверной проверки";
-    public const string BusinessObjectBindingLocalIntentSavedResult = "Локальный intent сохранен. Approved businessObjectKey не создан.";
-    public const string BusinessObjectBindingLocalIntentClearedResult = "Локальный intent очищен. Approved businessObjectKey по-прежнему отсутствует.";
+    public const string BusinessObjectBindingLocalIntentSavedResult = "Локальное намерение сохранено. Утвержденный businessObjectKey не создан.";
+    public const string BusinessObjectBindingLocalIntentClearedResult = "Локальное намерение очищено. Утвержденный businessObjectKey по-прежнему отсутствует.";
     public const string BusinessObjectBindingPreUploadBlockedTitle = "Серверная PreUploadCheck-проверка заблокирована";
     public const string PreUploadCheckBlockedMessage =
         "утвержденный источник businessObjectKey еще не описан; серверная предварительная проверка не может продолжаться как рабочий сценарий";
