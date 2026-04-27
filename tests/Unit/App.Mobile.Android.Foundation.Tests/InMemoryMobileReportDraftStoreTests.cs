@@ -1,4 +1,4 @@
-﻿namespace App.Mobile.Android.Foundation.Tests;
+namespace App.Mobile.Android.Foundation.Tests;
 
 public sealed class InMemoryMobileReportDraftStoreTests
 {
