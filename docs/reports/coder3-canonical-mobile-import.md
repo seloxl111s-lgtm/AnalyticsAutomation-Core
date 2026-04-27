@@ -53,11 +53,25 @@ What changes:
 - git diff --check
 
 ## Manual steps pending
-- physical Android check for create-from-last behavior.
+- none for REPORT-07.
+
+## REPORT-07 physical Android runtime check
+- Result: passed.
+- Runtime status: report07 phone ok.
+- Confirmed:
+  - "Создать из последнего" works when at least one draft exists;
+  - no-draft warning/disabled state works;
+  - copied draft has new DraftId;
+  - copied draft copies field values;
+  - copied draft does not copy attachments;
+  - copied draft status is Draft;
+  - copied draft can be edited, receive new video, validate, and queue locally;
+  - no fake businessObjectKey is shown;
+  - production PreUploadCheck remains blocked.
 
 ## REPORT-06 physical Android runtime check
 - Result: passed.
 - Runtime status: report06 phone ok.
 
 ## Next code step
-- wait for physical Android REPORT-07 check before push/PR.
+- UX polishing, or wait for backend concrete businessObjectKey source.
